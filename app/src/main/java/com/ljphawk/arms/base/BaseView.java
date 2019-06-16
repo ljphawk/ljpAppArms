@@ -19,7 +19,9 @@ public interface BaseView {
 
     void startActivity(Class targetActivity);
 
-    BaseActivity getActivitys();
+    void showLoading();
 
+    void showLoading(String content);
 
+    void hideLoading();
 }

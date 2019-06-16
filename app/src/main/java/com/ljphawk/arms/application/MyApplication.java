@@ -4,6 +4,8 @@ package com.ljphawk.arms.application;
 import android.app.Application;
 import android.content.Context;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
+
 /*
  *@创建者       L_jp
  *@创建时间     2019/6/14 13:44.
@@ -24,6 +26,6 @@ public class MyApplication extends Application {
         super.onCreate();
         mContext = this;
 
-
+        Fresco.initialize(this);
     }
 }

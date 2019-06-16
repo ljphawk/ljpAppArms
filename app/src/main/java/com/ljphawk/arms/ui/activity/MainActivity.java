@@ -7,8 +7,9 @@ import com.ljphawk.arms.R;
 import com.ljphawk.arms.application.ActivityManager;
 import com.ljphawk.arms.base.BaseActivity;
 import com.ljphawk.arms.presenter.MainPresenter;
+import com.ljphawk.arms.ui.view.MainView;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity<MainView,MainPresenter> implements MainView{
 
     private long mFirstPressedTime = 0;
 
@@ -25,13 +26,13 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public MainPresenter initPresenter() {
-        return null;
+        return new MainPresenter();
     }
 
 
     @Override
     protected void initData() {
-
+        presenter.showSplashFragment();
     }
 
 

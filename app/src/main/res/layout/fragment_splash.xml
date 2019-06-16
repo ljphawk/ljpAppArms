@@ -10,4 +10,5 @@
         app:actualImageScaleType="centerCrop"
         android:layout_height="match_parent"
         app:actualImageUri="@drawable/img_splash"/>
+
 </RelativeLayout>

@@ -61,15 +61,13 @@ public abstract class BaseFragment<V, P extends BasePresenter<V>> extends Fragme
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initView(view, savedInstanceState);
-
         mRequestUrlUtils = new RequestUrlUtils();
         presenter = initPresenter();
         if (null != presenter) {
             presenter.attach(mContext, (V) this);
             presenter.setRequestUrlUtils(mRequestUrlUtils);
         }
-
+        initView(view, savedInstanceState);
         initData(view, savedInstanceState);
     }
 
@@ -104,11 +102,6 @@ public abstract class BaseFragment<V, P extends BasePresenter<V>> extends Fragme
     }
 
     @Override
-    public BaseActivity getActivitys() {
-        return ((BaseActivity) mContext);
-    }
-
-
     public void showToast(String content) {
         ToastUtils.showToast(content);
     }

@@ -47,14 +47,14 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
         disposables = new CompositeDisposable();
         //request
         mRequestUrlUtils = new RequestUrlUtils();
-        //抽象 初始化findViewById
-        initView(savedInstanceState);
         //初始化presenter
         presenter = initPresenter();
         if (presenter != null) {
             presenter.attach(mContext, (V) this);
             presenter.setRequestUrlUtils(mRequestUrlUtils);
         }
+        //抽象 初始化findViewById
+        initView(savedInstanceState);
         //抽象 初始化数据
         initData();
     }
@@ -128,7 +128,7 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
 //        return tvTitle;
 //    }
 
-
+@Override
     public void showToast(String content) {
         ToastUtils.showToast(content);
     }
@@ -137,12 +137,6 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
     @Override
     public void startActivity(Class targetActivity) {
         mContext.startActivity(new Intent(mContext, targetActivity));
-    }
-
-
-    @Override
-    public BaseActivity getActivitys() {
-        return this;
     }
 
     //toolbar返回

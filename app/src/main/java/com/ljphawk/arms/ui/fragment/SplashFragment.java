@@ -7,13 +7,21 @@ import android.view.ViewGroup;
 
 import com.ljphawk.arms.R;
 import com.ljphawk.arms.base.BaseFragment;
-import com.ljphawk.arms.base.BasePresenter;
+import com.ljphawk.arms.listener.OnSplashListener;
+import com.ljphawk.arms.presenter.SplashPresenter;
+import com.ljphawk.arms.ui.view.SplashView;
 
-public class SplashFragment extends BaseFragment {
+public class SplashFragment extends BaseFragment<SplashView, SplashPresenter>implements SplashView {
+
+    private OnSplashListener mOnSplashListener;
+
+    public static SplashFragment newInstance() {
+        return new SplashFragment();
+    }
 
     @Override
-    public BasePresenter initPresenter() {
-        return null;
+    public SplashPresenter initPresenter() {
+        return new SplashPresenter();
     }
 
     @Override
@@ -28,6 +36,11 @@ public class SplashFragment extends BaseFragment {
 
     @Override
     protected void initData(View view, Bundle savedInstanceState) {
+        presenter.finish();
+    }
 
+
+    public void setOnSplashListener(OnSplashListener onSplashListener){
+        this.mOnSplashListener = onSplashListener;
     }
 }

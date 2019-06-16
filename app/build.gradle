@@ -32,6 +32,10 @@ android {
         cruncherEnabled = false
         useNewCruncher = false
     }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
 }
 
 configurations.all {
