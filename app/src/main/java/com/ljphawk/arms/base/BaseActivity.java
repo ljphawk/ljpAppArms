@@ -11,7 +11,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.ljp.titlebar.TitleBar;
 import com.ljp.titlebar.listener.OnLeftClickListener;
 import com.ljphawk.arms.R;
-import com.ljphawk.arms.application.ActivityManager;
+import com.ljphawk.arms.application.AppManager;
 import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
 import com.ljphawk.arms.utils.CommonUtils;
@@ -27,7 +27,6 @@ import io.reactivex.disposables.Disposable;
 
 public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCompatActivity implements BaseView, OnLeftClickListener {
 
-    //    public static final String TAG = "BaseActivity";
     public static String TAG = BaseActivity.class.getSimpleName();
     protected Context mContext;
     protected ImmersionBar mImmersionBar;
@@ -42,7 +41,7 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
         super.onCreate(savedInstanceState);
         setContentView(resView());
         //添加activity
-        ActivityManager.getInstance().addActivity(this);
+        AppManager.getInstance().addActivity(this);
         mContext = this;
         TAG = mContext.getClass().getSimpleName();
         //沉浸式
@@ -106,7 +105,7 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ActivityManager.getInstance().removeActivity(this);
+        AppManager.getInstance().removeActivity(this);
         cancelAllRequest();
     }
 

@@ -29,6 +29,7 @@ import com.ljp.titlebar.listener.OnTitleClickListener;
  *@更新描述
  */
 public class TitleBar extends FrameLayout implements View.OnClickListener, Runnable {
+    private static final String TAG = "TitleBar";
     private final Context mContext;
     private View mToolbarView;
     private TextView mTvToolbarRight;
@@ -124,6 +125,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, Runna
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         // 设置TitleBar默认的宽度
         int contentWidth = getMeasuredWidth();
+
         if (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.EXACTLY) {
             widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.EXACTLY);
             contentWidth = MeasureSpec.getSize(widthMeasureSpec);
@@ -136,8 +138,9 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, Runna
             int childCount = getChildCount();
             for (int i = 0; i < childCount; i++) {
                 View childAt = getChildAt(i);
-                //如果view是gone掉的或者第0个 （第0个是toolbar,高度不需要比较,固定写得match_parent）
+                //如果view是gone掉的或者第0个 （第0个是toolbarde 主布局）
                 if (childAt.getVisibility() == View.GONE || i == 0) {
+                    childAt.getLayoutParams().height = getActionBarHeight();
                     continue;
                 }
                 //测量子view的宽高

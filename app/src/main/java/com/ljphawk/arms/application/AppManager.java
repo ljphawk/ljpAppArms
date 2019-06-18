@@ -13,15 +13,15 @@ import java.util.Stack;
  * @author geyifeng
  * @date 2019-04-23 13:46
  */
-public class ActivityManager {
+public class AppManager {
 
     private Stack<Activity> mActivities = new Stack<>();
 
     private static class Holder {
-        private static final ActivityManager instance = new ActivityManager();
+        private static final AppManager instance = new AppManager();
     }
 
-    public static ActivityManager getInstance() {
+    public static AppManager getInstance() {
         return Holder.instance;
     }
 

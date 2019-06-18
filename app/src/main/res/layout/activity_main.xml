@@ -18,7 +18,7 @@
                 app:title="标题标题标题"
                 app:leftSize="16sp"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="wrap_content">
 
             </com.ljp.titlebar.TitleBar>
 
