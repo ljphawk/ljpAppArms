@@ -20,7 +20,7 @@ import java.util.List;
 public class CommonUtils {
 
 
-    public static boolean StringHasValue(String content) {
+    public static boolean StringHasValue(CharSequence content) {
         if (null == content || TextUtils.isEmpty(content)) {
             return false;
         } else {

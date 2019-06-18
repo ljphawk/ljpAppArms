@@ -3,12 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@android:color/white"
     android:layout_height="match_parent">
 
     <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/sdv_splash"
         android:layout_width="match_parent"
-        app:actualImageScaleType="centerCrop"
-        android:layout_height="match_parent"
-        app:actualImageUri="@drawable/img_splash"/>
+        app:actualImageResource="@drawable/img_splash"
+        app:actualImageScaleType="focusCrop"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="11111"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

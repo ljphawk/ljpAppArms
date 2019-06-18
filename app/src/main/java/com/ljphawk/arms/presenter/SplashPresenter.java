@@ -3,7 +3,6 @@ package com.ljphawk.arms.presenter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 
 import com.ljphawk.arms.R;
 import com.ljphawk.arms.base.BasePresenter;
@@ -21,8 +20,6 @@ import com.ljphawk.arms.ui.view.SplashView;
  */
 public class SplashPresenter extends BasePresenter<SplashView> {
 
-
-    private boolean mIsFinish = false;
     /**
      * 关闭当前页面
      * @param
@@ -38,6 +35,6 @@ public class SplashPresenter extends BasePresenter<SplashView> {
                         .commitAllowingStateLoss();
             }
         }
-        mIsFinish = true;
     }
+
 }

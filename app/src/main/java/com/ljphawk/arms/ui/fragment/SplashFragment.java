@@ -1,19 +1,18 @@
 package com.ljphawk.arms.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ljphawk.arms.R;
 import com.ljphawk.arms.base.BaseFragment;
-import com.ljphawk.arms.listener.OnSplashListener;
 import com.ljphawk.arms.presenter.SplashPresenter;
 import com.ljphawk.arms.ui.view.SplashView;
 
-public class SplashFragment extends BaseFragment<SplashView, SplashPresenter>implements SplashView {
+public class SplashFragment extends BaseFragment<SplashView, SplashPresenter> implements SplashView {
 
-    private OnSplashListener mOnSplashListener;
 
     public static SplashFragment newInstance() {
         return new SplashFragment();
@@ -36,11 +35,12 @@ public class SplashFragment extends BaseFragment<SplashView, SplashPresenter>imp
 
     @Override
     protected void initData(View view, Bundle savedInstanceState) {
-        presenter.finish();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                presenter.finish();
+            }
+        }, 2000);
     }
 
-
-    public void setOnSplashListener(OnSplashListener onSplashListener){
-        this.mOnSplashListener = onSplashListener;
-    }
 }

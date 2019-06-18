@@ -1,4 +1,4 @@
-package com.ljphawk.arms.utils;
+package com.ljp.base.utils;
 
 import android.content.Context;
 import android.util.DisplayMetrics;

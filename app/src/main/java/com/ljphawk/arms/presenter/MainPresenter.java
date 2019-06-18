@@ -26,7 +26,6 @@ public class MainPresenter extends BasePresenter<MainView> {
      * 展示Splash
      */
     public void showSplashFragment() {
-
         FragmentTransaction transaction = ((MainActivity) mvpView).getSupportFragmentManager().beginTransaction();
         mSplashFragment = (SplashFragment) ((MainActivity) mvpView).getSupportFragmentManager().findFragmentByTag(SplashFragment.class.getSimpleName());
         if (mSplashFragment != null) {
@@ -41,8 +40,5 @@ public class MainPresenter extends BasePresenter<MainView> {
             mSplashFragment = SplashFragment.newInstance();
             transaction.add(R.id.fl_splash_content, mSplashFragment, SplashFragment.class.getSimpleName()).commitAllowingStateLoss();
         }
-        mSplashFragment.setOnSplashListener((time, totalTime) -> {
-            //todo
-        });
     }
 }

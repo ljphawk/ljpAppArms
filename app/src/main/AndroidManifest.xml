@@ -39,7 +39,6 @@
 
         <activity
             android:name=".ui.activity.MainActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SplashAppTheme">

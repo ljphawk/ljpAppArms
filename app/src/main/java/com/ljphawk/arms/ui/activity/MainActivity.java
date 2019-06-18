@@ -9,7 +9,7 @@ import com.ljphawk.arms.base.BaseActivity;
 import com.ljphawk.arms.presenter.MainPresenter;
 import com.ljphawk.arms.ui.view.MainView;
 
-public class MainActivity extends BaseActivity<MainView,MainPresenter> implements MainView{
+public class MainActivity extends BaseActivity<MainView, MainPresenter> implements MainView {
 
     private long mFirstPressedTime = 0;
 
@@ -21,7 +21,7 @@ public class MainActivity extends BaseActivity<MainView,MainPresenter> implement
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-
+        presenter.showSplashFragment();
     }
 
     @Override
@@ -32,7 +32,6 @@ public class MainActivity extends BaseActivity<MainView,MainPresenter> implement
 
     @Override
     protected void initData() {
-        presenter.showSplashFragment();
     }
 
 

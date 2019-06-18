@@ -48,11 +48,6 @@ public abstract class BasePresenter<T> {
         this.mRequestUrlUtils = requestUrlUtils;
     }
 
-//    protected void umOnEvent(String eventId) {
-//        UmengEventTj.onEvent(mContext, eventId);
-//    }
-
-
     void addDisposables(Disposable disposable) {
         try {
             if (disposables != null) {
@@ -73,11 +68,6 @@ public abstract class BasePresenter<T> {
         }
     }
 
-//    public void postCatchedException(Throwable throwable) {
-//        if (!MyApplication.isDebug) {
-//            CrashReport.postCatchedException(throwable);
-//        }
-//    }
 
     public MyApplication getApp() {
         if (mContext == null) {

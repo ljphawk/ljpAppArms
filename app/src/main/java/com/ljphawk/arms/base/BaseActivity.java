@@ -4,13 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.ljp.titlebar.TitleBar;
+import com.ljp.titlebar.listener.OnLeftClickListener;
+import com.ljphawk.arms.R;
 import com.ljphawk.arms.application.ActivityManager;
 import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
+import com.ljphawk.arms.utils.CommonUtils;
 import com.ljphawk.arms.utils.ToastUtils;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -21,7 +25,7 @@ import io.reactivex.disposables.Disposable;
  * Created by Host-0 on 2017/1/16.
  */
 
-public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCompatActivity implements BaseView {
+public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCompatActivity implements BaseView, OnLeftClickListener {
 
     //    public static final String TAG = "BaseActivity";
     public static String TAG = BaseActivity.class.getSimpleName();
@@ -30,7 +34,7 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
     protected RequestUrlUtils mRequestUrlUtils;
     protected CompositeDisposable disposables;
     protected P presenter;
-    protected V mView;
+    private TitleBar mTitleBar;
 
 
     @Override
@@ -42,7 +46,7 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
         mContext = this;
         TAG = mContext.getClass().getSimpleName();
         //沉浸式
-        initImmersionBar(true);
+        initImmersionBar();
         //disposables
         disposables = new CompositeDisposable();
         //request
@@ -59,9 +63,14 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
         initData();
     }
 
-    protected void initImmersionBar(boolean enable) {
+    protected void initImmersionBar() {
         mImmersionBar = ImmersionBar.with(this);
-        mImmersionBar.keyboardEnable(enable) //解决软键盘与底部输入框冲突问题
+        mTitleBar = findViewById(R.id.base_toolbar);
+        if (null != mTitleBar) {
+            mImmersionBar.titleBar(mTitleBar);
+            mTitleBar.setLeftOnClickListener(this);
+        }
+        mImmersionBar.keyboardEnable(true) //解决软键盘与底部输入框冲突问题
                 .statusBarDarkFont(true, 0.2f)//如果不能改变状态栏的颜色 就用后面0.2f的透明度
                 .keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 .init();   //所有子类都将继承这些相同的属性
@@ -102,51 +111,55 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
     }
 
 
-//    public void setToolbarTitleAndBack(BaseActivity activity, boolean backEnabled, String title) {
-//        Toolbar toolbar = activity.findViewById(R.id.base_toolbar);
-//        if (toolbar == null) {
-//            return;
-//        }
-//        activity.setSupportActionBar(toolbar);//关联toolbar
-//        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);//不显示title
-//        activity.getSupportActionBar().setDisplayShowHomeEnabled(backEnabled); //启用back
-//        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(backEnabled); //启用back
-//        if (CommonUtils.StringHasValue(title)) {
-//            TextView tvTitle = activity.findViewById(R.id.tv_toolbar_title);
-//            tvTitle.setText(title);
-//        }
-//    }
-//
-//
-//    public Toolbar getToolbar(BaseActivity activity) {
-//        Toolbar toolbar = activity.findViewById(R.id.base_toolbar);
-//        return toolbar;
-//    }
-//
-//    public TextView getToolbarTextView(BaseActivity activity) {
-//        TextView tvTitle = activity.findViewById(R.id.tv_toolbar_title);
-//        return tvTitle;
-//    }
+    public void setTitleBarTitle(CharSequence title) {
+        if (CommonUtils.StringHasValue(title)) {
+            if (null != mTitleBar) {
+                mTitleBar.setTitle(title);
 
-@Override
+            }
+        }
+    }
+
+    public void setShowTitleBarLeft(boolean backEnabled) {
+        if (null != mTitleBar) {
+            mTitleBar.setShowLeft(backEnabled);
+        }
+    }
+
+    public TitleBar getTitleBar() {
+        return mTitleBar;
+    }
+
+    @Override
     public void showToast(String content) {
         ToastUtils.showToast(content);
     }
 
 
     @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showLoading(String content) {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
     public void startActivity(Class targetActivity) {
         mContext.startActivity(new Intent(mContext, targetActivity));
     }
 
-    //toolbar返回
+    //titleBar左边的点击 默认操作关闭activity
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            activityFinish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void onLeftClick(View v) {
+        activityFinish();
     }
 
     //关闭activity前的操作  ->如果需要自己控制 返回的操作，重写该方法， 删除super
@@ -177,20 +190,6 @@ public abstract class BaseActivity<V, P extends BasePresenter<V>> extends AppCom
         }
     }
 
-
-//    protected void umOnEvent(String eventId) {
-//        onEventParams(eventId, null);
-//    }
-
-//    protected void onEventParams(String eventId, Map<String, String> map) {
-//        UmengEventTj.onEventParams(mContext, eventId, map);
-//    }
-
-//    public void postCatchedException(Throwable throwable) {
-//        if (!MyApplication.isDebug) {
-//            CrashReport.postCatchedException(throwable);
-//        }
-//    }
 
     public MyApplication getApp() {
         return (MyApplication) getApplication();

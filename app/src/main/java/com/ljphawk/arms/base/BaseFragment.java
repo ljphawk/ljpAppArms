@@ -3,7 +3,6 @@ package com.ljphawk.arms.base;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
 import com.ljphawk.arms.utils.ToastUtils;
 
+import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -107,18 +107,24 @@ public abstract class BaseFragment<V, P extends BasePresenter<V>> extends Fragme
     }
 
     @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showLoading(String content) {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
     public void startActivity(Class targetActivity) {
         mContext.startActivity(new Intent(mContext, targetActivity));
     }
-
-//    protected void umOnEvent(String eventId) {
-//        onEventParams(eventId, null);
-//    }
-//
-//    protected void onEventParams(String eventId, Map<String, String> map) {
-//        UmengEventTj.onEventParams(mContext, eventId, map);
-//    }
-
 
     @Override
     public void onDestroy() {
@@ -149,12 +155,6 @@ public abstract class BaseFragment<V, P extends BasePresenter<V>> extends Fragme
             e.printStackTrace();
         }
     }
-
-//    public void postCatchedException(Throwable throwable) {
-//        if (!MyApplication.isDebug) {
-//            CrashReport.postCatchedException(throwable);
-//        }
-//    }
 
     public MyApplication getApp() {
         if (null == getActivity()) {
