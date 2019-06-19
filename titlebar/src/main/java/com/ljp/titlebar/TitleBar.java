@@ -125,7 +125,6 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, Runna
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         // 设置TitleBar默认的宽度
         int contentWidth = getMeasuredWidth();
-
         if (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.EXACTLY) {
             widthMeasureSpec = MeasureSpec.makeMeasureSpec(widthMeasureSpec, MeasureSpec.EXACTLY);
             contentWidth = MeasureSpec.getSize(widthMeasureSpec);
@@ -143,8 +142,6 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, Runna
                     childAt.getLayoutParams().height = getActionBarHeight();
                     continue;
                 }
-                //测量子view的宽高
-                measureChild(childAt, widthMeasureSpec, heightMeasureSpec);
                 contentMaxHeight = Math.max(contentMaxHeight, childAt.getMeasuredHeight());
             }
         }
