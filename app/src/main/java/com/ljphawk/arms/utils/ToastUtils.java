@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.ljp.base.utils.CommonUtils;
 import com.ljphawk.arms.application.MyApplication;
 
 /*

@@ -1,1 +1,1 @@
-include ':app', ':titlebar', ':base'
+include ':app', ':titlebar', ':base', ':bottomtab', ':dialog'

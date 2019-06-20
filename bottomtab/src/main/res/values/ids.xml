@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="main_bottom_tab1" type="id"/>
+    <item name="main_bottom_tab2" type="id"/>
+    <item name="main_bottom_tab3" type="id"/>
+    <item name="main_bottom_tab4" type="id"/>
+</resources>

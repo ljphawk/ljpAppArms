@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.ljphawk.arms.application.MyApplication;
-import com.ljphawk.arms.utils.CommonUtils;
+import com.ljp.base.utils.CommonUtils;
 import com.ljphawk.arms.utils.GsonUtil;
 import com.ljphawk.arms.utils.MD5Utils;
 import com.ljphawk.arms.utils.ToastUtils;

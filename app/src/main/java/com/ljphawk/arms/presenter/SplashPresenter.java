@@ -20,21 +20,6 @@ import com.ljphawk.arms.ui.view.SplashView;
  */
 public class SplashPresenter extends BasePresenter<SplashView> {
 
-    /**
-     * 关闭当前页面
-     * @param
-     */
-    public void finish() {
-        FragmentManager fragmentManager = ((SplashFragment) mvpView).getFragmentManager();
-        if (fragmentManager != null) {
-            Fragment fragment = fragmentManager.findFragmentByTag(mvpView.getClass().getSimpleName());
-            if (fragment != null) {
-                fragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_right_in, R.anim.slide_left_out)
-                        .remove(fragment)
-                        .commitAllowingStateLoss();
-            }
-        }
-    }
+
 
 }

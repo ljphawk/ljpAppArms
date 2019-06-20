@@ -14,6 +14,7 @@ package com.ljphawk.arms.utils;
 
 import android.util.Log;
 
+import com.ljp.base.utils.CommonUtils;
 import com.ljphawk.arms.application.MyApplication;
 
 import java.io.File;

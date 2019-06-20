@@ -13,66 +13,59 @@ package com.ljphawk.arms.base;
  */
 
 
-import android.app.Activity;
-import android.content.Context;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-import com.ljphawk.arms.application.MyApplication;
-import com.ljphawk.arms.http.RequestUrlUtils;
-import com.ljphawk.arms.utils.ToastUtils;
+public abstract class BasePresenter<V extends BaseView> implements InvocationHandler {
+    //弱引用, 防止内存泄漏
+    private WeakReference<V> weakReference;
+    private V mProxyView;
+    protected static final String TAG = "BasePresenter";
 
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-
-public abstract class BasePresenter<T> {
-    public T mvpView;
-    public Context mContext;
-    public static final String TAG = "BasePresenter";
-    public RequestUrlUtils mRequestUrlUtils;
-    protected CompositeDisposable disposables = new CompositeDisposable();
-
-    void attach(Context context, T view) {
-        this.mvpView = view;
-        this.mContext = context;
+    void attach(V v) {
+        this.weakReference = new WeakReference<>(v);
+        /*
+        使用动态代理，解决 getView 方法可能为空的问题
+         V 层解绑了 P 层，那么 getView 就为空，调用 V 层就会发生空指针异常
+         如果在 P 层的每个子类中都进行 getView() != null 防空判断会导致开发成本非常高，并且容易出现遗漏
+         */
+        mProxyView = (V) Proxy.newProxyInstance(v.getClass().getClassLoader(), v.getClass().getInterfaces(), this);
     }
 
+    /**
+     * 断开V层和P层
+     */
     void detach() {
-        cancelAllRequest();
-        this.mvpView = null;
-    }
-
-    void showToast(String content) {
-        ToastUtils.showToast(content);
-    }
-
-    void setRequestUrlUtils(RequestUrlUtils requestUrlUtils) {
-        this.mRequestUrlUtils = requestUrlUtils;
-    }
-
-    void addDisposables(Disposable disposable) {
-        try {
-            if (disposables != null) {
-                disposables.add(disposable);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (isViewAttached()) {
+            weakReference.clear();
+            weakReference = null;
         }
     }
 
-    void cancelAllRequest() {
-        try {
-            if (disposables != null) {
-                disposables.clear();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /*
+    这里拿到的是动态代理出来的view，不能强转成 子类对象
+     */
+    protected V getView() {
+        return mProxyView;
     }
 
+    /**
+     * @return P层和V层是否关联.
+     */
+    private boolean isViewAttached() {
+        return null != weakReference && null != weakReference.get();
+    }
 
-    public MyApplication getApp() {
-        if (mContext == null) {
-            return null;
-        }
-        return (MyApplication) ((Activity) mContext).getApplication();
+    /**
+     *  动态代理接口，每次调用了代理对象的方法最终也会回到到这里
+     *
+     * {@link InvocationHandler}
+     */
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // 如果当前还是绑定状态就执行 View 的方法，否则就不执行
+        return isViewAttached() ? method.invoke(weakReference.get(), args) : null;
     }
 }

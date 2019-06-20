@@ -19,16 +19,25 @@ import okhttp3.ResponseBody;
 
 public class RequestUrlUtils {
 
-    private HttpServiceApi mHttpServiceInstance;
+    private static HttpServiceApi mHttpServiceInstance;
+    private static RequestUrlUtils sRequestUrlUtils;
 
-    public RequestUrlUtils() {
-        if (mHttpServiceInstance == null) {
+    public static RequestUrlUtils getInstance() {
+        if (null == mHttpServiceInstance) {
             synchronized (RequestUrlUtils.class) {
-                if (mHttpServiceInstance == null) {
+                if (null == mHttpServiceInstance) {
                     mHttpServiceInstance = RetrofitUtil.getHttpServiceInstance();
                 }
             }
         }
+        if (null == sRequestUrlUtils) {
+            synchronized (RequestUrlUtils.class) {
+                if (null == sRequestUrlUtils) {
+                    sRequestUrlUtils = new RequestUrlUtils();
+                }
+            }
+        }
+        return sRequestUrlUtils;
     }
 
     public Observable<ResponseBody> downloadFile(String fileUrl) {

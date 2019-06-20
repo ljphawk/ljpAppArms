@@ -20,11 +20,10 @@ import io.reactivex.disposables.Disposable;
  *ljp
  */
 
-public abstract class BaseFragment<V, P extends BasePresenter<V>> extends Fragment implements BaseView {
+public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BaseView {
     public Context mContext;
     public static String TAG = BaseActivity.class.getSimpleName();
     private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
-    protected RequestUrlUtils mRequestUrlUtils;
     protected CompositeDisposable disposables;
     protected P presenter;
 
@@ -61,11 +60,9 @@ public abstract class BaseFragment<V, P extends BasePresenter<V>> extends Fragme
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mRequestUrlUtils = new RequestUrlUtils();
         presenter = initPresenter();
         if (null != presenter) {
-            presenter.attach(mContext, (V) this);
-            presenter.setRequestUrlUtils(mRequestUrlUtils);
+            presenter.attach( this);
         }
         initView(view, savedInstanceState);
         initData(view, savedInstanceState);
@@ -163,4 +160,8 @@ public abstract class BaseFragment<V, P extends BasePresenter<V>> extends Fragme
         return (MyApplication) getActivity().getApplication();
     }
 
+    @Override
+    public RequestUrlUtils getRequest() {
+        return RequestUrlUtils.getInstance();
+    }
 }

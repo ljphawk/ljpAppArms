@@ -12,16 +12,25 @@ package com.ljphawk.arms.base;
  *@更新描述         ${""}
  */
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.ljphawk.arms.http.RequestUrlUtils;
+
 public interface BaseView {
 
 
     void showToast(String content);
 
-    void startActivity(Class targetActivity);
+    void startActivity(Class<? extends Activity> targetActivity);
 
     void showLoading();
 
     void showLoading(String content);
 
     void hideLoading();
+
+    Context getContext();
+
+    RequestUrlUtils getRequest();
 }

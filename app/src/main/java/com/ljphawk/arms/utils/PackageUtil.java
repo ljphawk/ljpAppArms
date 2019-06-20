@@ -5,6 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.ljp.base.utils.CommonUtils;
+
 public class PackageUtil {
 
 	private static final String TAG = "PackageUtil";
