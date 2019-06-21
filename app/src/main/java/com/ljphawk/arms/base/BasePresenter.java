@@ -27,8 +27,8 @@ public abstract class BasePresenter<V extends BaseView> implements InvocationHan
     void attach(V v) {
         this.weakReference = new WeakReference<>(v);
         /*
-        使用动态代理，解决 getView 方法可能为空的问题
          V 层解绑了 P 层，那么 getView 就为空，调用 V 层就会发生空指针异常
+         使用动态代理，解决 getView 方法可能为空的问题
          如果在 P 层的每个子类中都进行 getView() != null 防空判断会导致开发成本非常高，并且容易出现遗漏
          */
         mProxyView = (V) Proxy.newProxyInstance(v.getClass().getClassLoader(), v.getClass().getInterfaces(), this);
