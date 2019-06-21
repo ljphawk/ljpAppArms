@@ -56,6 +56,7 @@ public class TitleBar extends FrameLayout implements View.OnClickListener, Runna
     }
 
     private void init() {
+        removeAllViews();
         int id = getId();
         if (id > 0) {
             throw new RuntimeException("TitleBar的id已经设置为base_toolbar，请使用base_toolbar");

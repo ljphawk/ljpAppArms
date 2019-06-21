@@ -13,4 +13,5 @@ import com.ljphawk.arms.base.BaseView;
  *@更新描述
  */
 public interface MainView extends BaseView {
+
 }

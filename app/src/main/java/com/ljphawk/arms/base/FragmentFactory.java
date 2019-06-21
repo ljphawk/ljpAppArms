@@ -4,6 +4,7 @@ import com.ljphawk.arms.ui.fragment.HomeFragment1;
 import com.ljphawk.arms.ui.fragment.HomeFragment2;
 import com.ljphawk.arms.ui.fragment.HomeFragment3;
 import com.ljphawk.arms.ui.fragment.HomeFragment4;
+import com.ljphawk.arms.utils.ToastUtils;
 
 
 public class FragmentFactory {
@@ -57,5 +58,6 @@ public class FragmentFactory {
         mHomeFragment2 = null;
         mHomeFragment3 = null;
         mHomeFragment4 = null;
+        ToastUtils.destroy();
     }
 }

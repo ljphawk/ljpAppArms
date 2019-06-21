@@ -34,7 +34,7 @@ public abstract class BasePresenter<V extends BaseView> implements InvocationHan
         mProxyView = (V) Proxy.newProxyInstance(v.getClass().getClassLoader(), v.getClass().getInterfaces(), this);
     }
 
-    /**
+    /*
      * 断开V层和P层
      */
     void detach() {
@@ -45,7 +45,7 @@ public abstract class BasePresenter<V extends BaseView> implements InvocationHan
     }
 
     /*
-    这里拿到的是动态代理出来的view，不能强转成 子类对象
+    这里拿到的是动态代理出来的view接口
      */
     protected V getView() {
         return mProxyView;
@@ -58,14 +58,15 @@ public abstract class BasePresenter<V extends BaseView> implements InvocationHan
         return null != weakReference && null != weakReference.get();
     }
 
-    /**
-     *  动态代理接口，每次调用了代理对象的方法最终也会回到到这里
-     *
-     * {@link InvocationHandler}
+    /*
+     * 每次调用了代理对象的方法最终也会回到到这里
+     * 如果弱引用的view已经null，返回也是null
+     * null的话  就不会调用mvpView的方法，这样也就可以减少对mvpView的盘空了
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         // 如果当前还是绑定状态就执行 View 的方法，否则就不执行
         return isViewAttached() ? method.invoke(weakReference.get(), args) : null;
     }
+
 }

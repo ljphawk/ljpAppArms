@@ -50,7 +50,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         mMainBottomTab.setBottomTabItemClickListener(this);
         //显示第一个fragment
         showContentFragment(0);
-
     }
 
 
@@ -131,4 +130,5 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         super.onDestroy();
         FragmentFactory.getInstance().onDestroy();
     }
+
 }

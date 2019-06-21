@@ -1,15 +1,7 @@
 package com.ljphawk.arms.presenter;
 
 
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-
-import com.ljphawk.arms.R;
-import com.ljphawk.arms.base.BaseFragment;
 import com.ljphawk.arms.base.BasePresenter;
-import com.ljphawk.arms.base.FragmentFactory;
-import com.ljphawk.arms.ui.activity.MainActivity;
-import com.ljphawk.arms.ui.fragment.SplashFragment;
 import com.ljphawk.arms.ui.view.MainView;
 
 /*
@@ -22,6 +14,5 @@ import com.ljphawk.arms.ui.view.MainView;
  *@更新描述
  */
 public class MainPresenter extends BasePresenter<MainView> {
-
 
 }

@@ -59,4 +59,8 @@ public class ToastUtils {
         sToast.setText(msg);
     }
 
+    public static void destroy(){
+        sToast = null;
+    }
+
 }
