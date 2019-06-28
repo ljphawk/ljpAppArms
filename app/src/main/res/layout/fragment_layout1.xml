@@ -9,4 +9,10 @@
         android:layout_centerInParent="true"
         android:text="11111"
         android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/bt_show_dialog"
+        android:layout_width="match_parent"
+        android:text="显示dialog"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

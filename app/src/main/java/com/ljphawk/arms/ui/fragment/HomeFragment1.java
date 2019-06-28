@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ljp.dialog.BaseDialog;
 import com.ljphawk.arms.R;
 import com.ljphawk.arms.base.BaseFragment;
 import com.ljphawk.arms.base.BasePresenter;
@@ -32,7 +33,12 @@ public class HomeFragment1 extends BaseFragment {
 
     @Override
     protected void initView(View view, Bundle savedInstanceState) {
-
+        view.findViewById(R.id.bt_show_dialog).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BaseDialog.Builder<>(mContext).setContentView(R.layout.test_dialog).show();
+            }
+        });
     }
 
     @Override
