@@ -24,13 +24,36 @@ public interface BaseView {
 
     void startActivity(Class<? extends Activity> targetActivity);
 
-    void showLoading();
-
-    void showLoading(String content);
-
-    void hideLoading();
-
+    /**
+     * 获取上下文
+     * @return
+     */
     Context getContext();
 
+    /**
+     * 获取请求
+     * @return
+     */
     RequestUrlUtils getRequest();
+
+    /**
+     * 加载中
+     */
+    void showLoading();
+
+    /**
+     * 加载中
+     */
+    void showLoading(String content);
+
+    /**
+     * 隐藏加载
+     */
+    void hideLoading();
+
+    /**
+     * 加载完成
+     */
+    void onLoadComplete();
+
 }

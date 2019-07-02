@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
+import com.ljphawk.arms.utils.StatusManager;
 import com.ljphawk.arms.utils.ToastUtils;
 
 import io.reactivex.annotations.Nullable;
@@ -26,6 +27,9 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     private static final String STATE_SAVE_IS_HIDDEN = "STATE_SAVE_IS_HIDDEN";
     protected CompositeDisposable disposables;
     protected P presenter;
+    private final StatusManager mStatusManager = new StatusManager();
+    // 根布局
+    private View mRootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,8 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        return resFragmentView(inflater, container, savedInstanceState);
+        mRootView = resFragmentView(inflater, container, savedInstanceState);
+        return mRootView;
     }
 
     @Override
@@ -105,17 +110,32 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
     @Override
     public void showLoading() {
-
+        mStatusManager.showLoading(getActivity());
     }
 
     @Override
     public void showLoading(String content) {
-
+        mStatusManager.showLoading(getActivity(),content);
     }
 
     @Override
     public void hideLoading() {
+        mStatusManager.hideLoading();
+    }
 
+    @Override
+    public void onLoadComplete() {
+        mStatusManager.showComplete();
+    }
+
+
+    public void onLoadEmpty(Object object) {
+        mStatusManager.showEmpty(object);
+    }
+
+
+    public void onLoadError(Object object) {
+        mStatusManager.showError(object);
     }
 
     @Override

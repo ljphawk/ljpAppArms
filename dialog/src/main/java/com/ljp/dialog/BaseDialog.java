@@ -3,16 +3,19 @@ package com.ljp.dialog;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.annotation.StyleRes;
 import android.support.v7.app.AppCompatDialog;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -149,6 +152,37 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
         return mHandler.postAtTime(r, this, uptimeMillis);
     }
 
+    /**
+     * Dialog 动画样式
+     */
+    public static final class AnimStyle {
+
+        // 默认动画效果
+        static final int DEFAULT = R.style.ScaleAnimStyle;
+
+        // 缩放动画
+        public static final int SCALE = R.style.ScaleAnimStyle;
+
+        // IOS 动画
+        public static final int IOS = R.style.IOSAnimStyle;
+
+        // 吐司动画
+        public static final int TOAST = android.R.style.Animation_Toast;
+
+        // 顶部弹出动画
+        public static final int TOP = R.style.TopAnimStyle;
+
+        // 底部弹出动画
+        public static final int BOTTOM = R.style.BottomAnimStyle;
+
+        // 左边弹出动画
+        public static final int LEFT = R.style.LeftAnimStyle;
+
+        // 右边弹出动画
+        public static final int RIGHT = R.style.RightAnimStyle;
+    }
+
+
     public static class Builder<B extends Builder> {
 
         protected static final int MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT;
@@ -167,6 +201,10 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
         private int mHeight = WRAP_CONTENT;
         // 点击空白是否能够取消  默认点击阴影可以取消
         private boolean mCancelable = true;
+        // 主题
+        private int mThemeResId = -1;
+        // 动画
+        private int mAnimations = -1;
         //id属性设置
         private SparseArray<CharSequence> mTextArray = new SparseArray<>();
         private SparseIntArray mVisibilityArray = new SparseIntArray();
@@ -215,7 +253,7 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
                 }
             }
 
-            mDialog = createDialog(mContext, -1);
+            mDialog = createDialog(mContext, mThemeResId);
             mDialog.setContentView(mContentView);
 
             mDialog.setCancelable(mCancelable);
@@ -235,12 +273,19 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
             if (mOnKeyListener != null) {
                 mDialog.setOnKeyListener(mOnKeyListener);
             }
+
+            // 判断有没有设置动画
+            if (mAnimations == -1) {
+                // 没有的话就设置默认的动画
+                mAnimations = AnimStyle.DEFAULT;
+            }
+
             // 设置参数
             WindowManager.LayoutParams params = mDialog.getWindow().getAttributes();
             params.width = mWidth;
             params.height = mHeight;
             params.gravity = mGravity;
-//            params.windowAnimations = mAnimations;
+            params.windowAnimations = mAnimations;
             mDialog.getWindow().setAttributes(params);
 
             // 设置文本
@@ -257,7 +302,7 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
             for (int i = 0; i < mBackgroundArray.size(); i++) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     mContentView.findViewById(mBackgroundArray.keyAt(i)).setBackground(mBackgroundArray.valueAt(i));
-                }else {
+                } else {
                     mContentView.findViewById(mBackgroundArray.keyAt(i)).setBackgroundDrawable(mBackgroundArray.valueAt(i));
                 }
             }
@@ -307,6 +352,22 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
                 gravity = Gravity.getAbsoluteGravity(gravity, mContext.getResources().getConfiguration().getLayoutDirection());
             }
             mGravity = gravity;
+            if (mAnimations == -1) {
+                switch (mGravity) {
+                    case Gravity.TOP:
+                        mAnimations = AnimStyle.TOP;
+                        break;
+                    case Gravity.BOTTOM:
+                        mAnimations = AnimStyle.BOTTOM;
+                        break;
+                    case Gravity.LEFT:
+                        mAnimations = AnimStyle.LEFT;
+                        break;
+                    case Gravity.RIGHT:
+                        mAnimations = AnimStyle.RIGHT;
+                        break;
+                }
+            }
             return (B) this;
         }
 
@@ -358,12 +419,14 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
             mOnKeyListener = onKeyListener;
             return (B) this;
         }
+
         /**
          * 设置文本
          */
         public B setText(@IdRes int id, @StringRes int resId) {
             return setText(id, mContext.getResources().getString(resId));
         }
+
         public B setText(@IdRes int id, CharSequence text) {
             mTextArray.put(id, text);
             return (B) this;
@@ -383,6 +446,7 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
         public B setBackground(@IdRes int id, @DrawableRes int resId) {
             return setBackground(id, mContext.getResources().getDrawable(resId));
         }
+
         public B setBackground(@IdRes int id, Drawable drawable) {
             mBackgroundArray.put(id, drawable);
             return (B) this;
@@ -394,6 +458,7 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
         public B setImageDrawable(@IdRes int id, @DrawableRes int resId) {
             return setBackground(id, mContext.getResources().getDrawable(resId));
         }
+
         public B setImageDrawable(@IdRes int id, Drawable drawable) {
             mImageArray.put(id, drawable);
             return (B) this;
@@ -404,6 +469,129 @@ public class BaseDialog extends AppCompatDialog implements DialogInterface.OnSho
          */
         public B setOnClickListener(@IdRes int id, @NonNull com.ljp.dialog.listener.OnClickListener listener) {
             mClickArray.put(id, listener);
+            return (B) this;
+        }
+
+        /**
+         * 延迟执行，一定要在创建了Dialog之后调用（供子类调用）
+         */
+        protected final boolean post(Runnable r) {
+            return mDialog.post(r);
+        }
+
+        /**
+         * 延迟一段时间执行，一定要在创建了Dialog之后调用（仅供子类调用）
+         */
+        protected final boolean postDelayed(Runnable r, long delayMillis) {
+            return mDialog.postDelayed(r, delayMillis);
+        }
+
+        /**
+         * 在指定的时间执行，一定要在创建了Dialog之后调用（仅供子类调用）
+         */
+        protected final boolean postAtTime(Runnable r, long uptimeMillis) {
+            return mDialog.postAtTime(r, uptimeMillis);
+        }
+
+        /**
+         * 是否设置了取消（仅供子类调用）
+         */
+        protected boolean isCancelable() {
+            return mCancelable;
+        }
+
+        /**
+         * 获取上下文对象（仅供子类调用）
+         */
+        protected Context getContext() {
+            return mContext;
+        }
+
+        /**
+         * 获取 Dialog 重心（仅供子类调用）
+         */
+        protected int getGravity() {
+            return mGravity;
+        }
+
+        /**
+         * 获取资源对象（仅供子类调用）
+         */
+        protected Resources getResources() {
+            return mContext.getResources();
+        }
+
+        /**
+         * 根据 id 获取一个文本（仅供子类调用）
+         */
+        protected CharSequence getText(@StringRes int resId) {
+            return mContext.getText(resId);
+        }
+
+        /**
+         * 根据 id 获取一个 String（仅供子类调用）
+         */
+        protected String getString(@StringRes int resId) {
+            return mContext.getString(resId);
+        }
+
+        /**
+         * 根据 id 获取一个颜色（仅供子类调用）
+         */
+        protected int getColor(@ColorRes int id) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return mContext.getColor(id);
+            } else {
+                return mContext.getResources().getColor(id);
+            }
+        }
+
+        /**
+         * 根据 id 获取一个 Drawable（仅供子类调用）
+         */
+        protected Drawable getDrawable(@DrawableRes int id) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                return mContext.getDrawable(id);
+            } else {
+                return mContext.getResources().getDrawable(id);
+            }
+        }
+
+        /**
+         * 根据 id 查找 View（仅供子类调用）
+         */
+        protected <V extends View> V findViewById(@IdRes int id) {
+            return mContentView.findViewById(id);
+        }
+
+        /**
+         * 获取当前 Dialog 对象（仅供子类调用）
+         */
+        protected BaseDialog getDialog() {
+            return mDialog;
+        }
+
+        /**
+         * 销毁当前 Dialog（仅供子类调用）
+         */
+        protected void dismiss() {
+            mDialog.dismiss();
+        }
+
+        /**
+         * 设置主题 id
+         */
+        public B setThemeStyle(@StyleRes int themeResId) {
+            mThemeResId = themeResId;
+            return (B) this;
+        }
+
+        /**
+         * 设置动画
+         */
+        public B setAnimStyle(@StyleRes int resId) {
+            mAnimations = resId;
             return (B) this;
         }
 

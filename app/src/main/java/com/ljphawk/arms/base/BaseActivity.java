@@ -9,13 +9,14 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.ljp.base.utils.CommonUtils;
 import com.ljp.titlebar.TitleBar;
 import com.ljp.titlebar.listener.OnLeftClickListener;
 import com.ljphawk.arms.R;
 import com.ljphawk.arms.application.AppManager;
 import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
-import com.ljp.base.utils.CommonUtils;
+import com.ljphawk.arms.utils.StatusManager;
 import com.ljphawk.arms.utils.ToastUtils;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -34,6 +35,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     protected CompositeDisposable disposables;
     protected P presenter;
     private TitleBar mTitleBar;
+    private final StatusManager mStatusManager = new StatusManager();
 
 
     @Override
@@ -131,24 +133,39 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         ToastUtils.showToast(content);
     }
 
-
     @Override
     public void showLoading() {
-
+        mStatusManager.showLoading(this);
     }
 
     @Override
     public void showLoading(String content) {
-
+        mStatusManager.showLoading(this, content);
     }
 
     @Override
     public void hideLoading() {
-
+        mStatusManager.hideLoading();
     }
 
     @Override
-    public void startActivity(Class <? extends Activity> targetActivity) {
+    public void onLoadComplete() {
+        mStatusManager.showComplete();
+    }
+     public void onLoadComplete(Object object) {
+        mStatusManager.showComplete(object);
+    }
+
+    public void onLoadEmpty(Object object) {
+        mStatusManager.showEmpty(object);
+    }
+
+    public void onLoadError(Object object) {
+        mStatusManager.showError(object);
+    }
+
+    @Override
+    public void startActivity(Class<? extends Activity> targetActivity) {
         mContext.startActivity(new Intent(mContext, targetActivity));
     }
 

@@ -52,7 +52,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         showContentFragment(0);
     }
 
-
     private BaseFragment mFragment;
 
     /**
@@ -79,6 +78,20 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     public void tabItemClick(int position, String name, View view) {
         mMainBottomTab.setTabSelect(position);
         showContentFragment(position);
+        switch (position) {
+            case 0:
+                onLoadComplete();
+                break;
+            case 1:
+                onLoadEmpty(findViewById(R.id.fl_content));
+                break;
+            case 2:
+                onLoadError(findViewById(R.id.fl_content));
+                break;
+            case 3:
+                onLoadError(this);
+                break;
+        }
     }
 
     /*

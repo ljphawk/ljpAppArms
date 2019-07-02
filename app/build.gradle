@@ -82,4 +82,5 @@ dependencies {
     implementation project(':titlebar')
     implementation project(':bottomtab')
     implementation project(':dialog')
+    implementation project(':widget')
 }
