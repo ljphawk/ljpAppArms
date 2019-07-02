@@ -148,18 +148,33 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         mStatusManager.hideLoading();
     }
 
+    /**
+     * 加载完成，如果不传object的话，
+     * 默认显示回当时第一个设置empty或者error的object
+     */
     @Override
     public void onLoadComplete() {
         mStatusManager.showComplete();
     }
-     public void onLoadComplete(Object object) {
+
+    /**
+     *
+     * @param object 针对其他显示的view视图
+     */
+    public void onLoadComplete(Object object) {
         mStatusManager.showComplete(object);
     }
 
+    /**
+     *设置指定对象view为空状态
+     */
     public void onLoadEmpty(Object object) {
         mStatusManager.showEmpty(object);
     }
 
+    /**
+     *设置指定对象view为加载错误的状态
+     */
     public void onLoadError(Object object) {
         mStatusManager.showError(object);
     }

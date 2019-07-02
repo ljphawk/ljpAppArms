@@ -6,11 +6,10 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.AttrRes;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
-import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,15 +71,15 @@ public class LoadHintLayout extends FrameLayout {
             case LoadHintLayout.errorType:
                 // 判断当前网络是否可用
                 if (isNetworkAvailable(getContext())) {
-                    setIcon(R.drawable.icon_hint_request);
+                    setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_request));
                     setHint("网络请求错误");
                 } else {
-                    setIcon(R.drawable.icon_hint_nerwork);
+                    setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_nerwork));
                     setHint("没有网络了");
                 }
                 break;
             case LoadHintLayout.emptyType:
-                setIcon(R.drawable.icon_hint_empty);
+                setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_empty));
                 setHint("暂无数据");
                 break;
             default:
@@ -100,10 +99,6 @@ public class LoadHintLayout extends FrameLayout {
     /**
      * 设置提示图标，请在show方法之后调用
      */
-    public void setIcon(@DrawableRes int iconId) {
-        setIcon(getResources().getDrawable(iconId));
-    }
-
     public void setIcon(Drawable drawable) {
         if (null != mImageView) {
             mImageView.setImageDrawable(drawable);
@@ -113,10 +108,6 @@ public class LoadHintLayout extends FrameLayout {
     /**
      * 设置提示文本，请在show方法之后调用
      */
-    public void setHint(@StringRes int textId) {
-        setHint(getResources().getString(textId));
-    }
-
     public void setHint(CharSequence text) {
         if (null != mTextView && null != text) {
             mTextView.setText(text);

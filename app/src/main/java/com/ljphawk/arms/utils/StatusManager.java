@@ -4,11 +4,8 @@ package com.ljphawk.arms.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,9 +29,8 @@ public class StatusManager {
 
     private BaseDialog mDialog;
     private String loadMessage = "加载中...";
-    private LoadHintLayout mLoadHintLayout;
     private Context mContext;
-    private Map<Object,LoadHintLayout> mLoadHintLayoutMap = new HashMap<>();
+    private Map<Object, LoadHintLayout> mLoadHintLayoutMap = new HashMap<>();
 
     /**
      * 显示加载中
@@ -74,9 +70,7 @@ public class StatusManager {
      */
     public void showComplete() {
         hideLoading();
-        if (null != mLoadHintLayout) {
-            showLayout(null, LoadHintLayout.completeType);
-        }
+        showComplete(mLoadHintLayoutMap.keySet().iterator().next());
     }
 
     /**
@@ -113,12 +107,13 @@ public class StatusManager {
                 loadHintLayout.show(type);
                 return;
             }
+        }else {
+            //如果不包含并且类型还是完成状态不进行下面的操作
+            if (type == LoadHintLayout.completeType) {
+                return;
+            }
         }
 
-        if (null != mLoadHintLayout) {
-            mLoadHintLayout.show(type);
-            return;
-        }
         View contentParent;
         if (activityOrFragmentOrView instanceof Activity) {
             Activity activity = (Activity) activityOrFragmentOrView;
@@ -128,7 +123,7 @@ public class StatusManager {
             Fragment fragment = (Fragment) activityOrFragmentOrView;
             mContext = fragment.getActivity();
             contentParent = (ViewGroup) (fragment.getView().getParent());
-            if(contentParent == null){
+            if (contentParent == null) {
                 throw new IllegalArgumentException("the fragment must already has a parent ,please do not invoke this in onCreateView,you should use this method in onActivityCreated() or onStart");
             }
         } else if (activityOrFragmentOrView instanceof View) {
@@ -154,39 +149,41 @@ public class StatusManager {
             oldContent = ((ViewGroup) contentParent).getChildAt(0);
         }
         ((ViewGroup) contentParent).removeView(oldContent);
-        mLoadHintLayout = new LoadHintLayout(mContext);
-        mLoadHintLayout.setLayoutParams(oldContent.getLayoutParams());
-        ((ViewGroup) contentParent).addView(mLoadHintLayout, index);
-        mLoadHintLayout.setContentView(oldContent);
-        mLoadHintLayout.show(type);
+        LoadHintLayout loadHintLayout = new LoadHintLayout(mContext);
+        ((ViewGroup) contentParent).addView(loadHintLayout, index, oldContent.getLayoutParams());
+        loadHintLayout.setContentView(oldContent);
+        loadHintLayout.show(type);
 
-
+        mLoadHintLayoutMap.put(activityOrFragmentOrView, loadHintLayout);
     }
 
 
     /**
      * 设置提示图标
      */
-    public void setIcon(@DrawableRes int iconId) {
-        setIcon(ContextCompat.getDrawable(mContext, iconId));
+    public void setIcon(Drawable drawable) {
+        setIcon(mLoadHintLayoutMap.keySet().iterator().next(), drawable);
     }
 
-    public void setIcon(Drawable drawable) {
-        if (null != mLoadHintLayout) {
-            mLoadHintLayout.setIcon(drawable);
+    public void setIcon(Object activityOrFragmentOrView, Drawable drawable) {
+        LoadHintLayout loadHintLayout = mLoadHintLayoutMap.get(activityOrFragmentOrView);
+        if (null != loadHintLayout) {
+            loadHintLayout.setIcon(drawable);
         }
     }
 
     /**
      * 设置提示文本
      */
-    public void setHint(@StringRes int textId) {
-        setHint(mContext.getResources().getString(textId));
-    }
 
     public void setHint(CharSequence text) {
-        if (null != mLoadHintLayout && null != text) {
-            mLoadHintLayout.setHint(text);
+        setHint(mLoadHintLayoutMap.keySet().iterator().next(), text);
+    }
+
+    public void setHint(Object activityOrFragmentOrView, CharSequence text) {
+        LoadHintLayout loadHintLayout = mLoadHintLayoutMap.get(activityOrFragmentOrView);
+        if (null != loadHintLayout) {
+            loadHintLayout.setHint(text);
         }
     }
 

@@ -60,8 +60,6 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.TestActivity"/>
-
 
     </application>
 
