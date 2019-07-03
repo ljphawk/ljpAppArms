@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ljp.widget.LoadHintLayout;
 import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
 import com.ljphawk.arms.utils.StatusManager;
@@ -134,25 +135,31 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
     /**
      *
-     * @param object 针对其他显示的view视图
+     * @param activityOrFragmentOrView 针对其他显示的view视图
      */
-    public void onLoadComplete(Object object) {
-        mStatusManager.showComplete(object);
+    public void onLoadComplete(Object activityOrFragmentOrView) {
+        mStatusManager.showComplete(activityOrFragmentOrView);
     }
 
     /**
      *设置指定对象view为空状态
      */
-    public void onLoadEmpty(Object object) {
-        mStatusManager.showEmpty(object);
+    public void onLoadEmpty(Object activityOrFragmentOrView) {
+        mStatusManager.showEmpty(activityOrFragmentOrView);
     }
 
     /**
      *设置指定对象view为加载错误的状态
      */
-    public void onLoadError(Object object) {
-        mStatusManager.showError(object);
+    public void onLoadError(Object activityOrFragmentOrView) {
+        mStatusManager.showError(activityOrFragmentOrView);
     }
+
+    public void onLoadError(Object activityOrFragmentOrView, LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
+        mStatusManager.showError(activityOrFragmentOrView);
+        mStatusManager.setPageRetryClickListener(activityOrFragmentOrView, pageRetryClickListener);
+    }
+
 
     @Override
     public void startActivity(Class targetActivity) {

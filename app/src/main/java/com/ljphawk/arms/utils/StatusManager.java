@@ -70,29 +70,32 @@ public class StatusManager {
      */
     public void showComplete() {
         hideLoading();
+        if (mLoadHintLayoutMap.size() == 0) {
+            return;
+        }
         showComplete(mLoadHintLayoutMap.keySet().iterator().next());
     }
 
     /**
      * 显示加载完成
      */
-    public void showComplete(Object object) {
+    public void showComplete(Object activityOrFragmentOrView) {
         hideLoading();
-        showLayout(object, LoadHintLayout.completeType);
+        showLayout(activityOrFragmentOrView, LoadHintLayout.completeType);
     }
 
     /**
      * 显示空提示
      */
-    public void showEmpty(Object object) {
-        showLayout(object, LoadHintLayout.emptyType);
+    public void showEmpty(Object activityOrFragmentOrView) {
+        showLayout(activityOrFragmentOrView, LoadHintLayout.emptyType);
     }
 
     /**
      * 显示错误提示
      */
-    public void showError(Object object) {
-        showLayout(object, LoadHintLayout.errorType);
+    public void showError(Object activityOrFragmentOrView) {
+        showLayout(activityOrFragmentOrView, LoadHintLayout.errorType);
     }
 
     /**
@@ -107,7 +110,7 @@ public class StatusManager {
                 loadHintLayout.show(type);
                 return;
             }
-        }else {
+        } else {
             //如果不包含并且类型还是完成状态不进行下面的操作
             if (type == LoadHintLayout.completeType) {
                 return;
@@ -162,6 +165,9 @@ public class StatusManager {
      * 设置提示图标
      */
     public void setIcon(Drawable drawable) {
+        if (mLoadHintLayoutMap.size() == 0) {
+            return;
+        }
         setIcon(mLoadHintLayoutMap.keySet().iterator().next(), drawable);
     }
 
@@ -177,6 +183,9 @@ public class StatusManager {
      */
 
     public void setHint(CharSequence text) {
+        if (mLoadHintLayoutMap.size() == 0) {
+            return;
+        }
         setHint(mLoadHintLayoutMap.keySet().iterator().next(), text);
     }
 
@@ -185,6 +194,21 @@ public class StatusManager {
         if (null != loadHintLayout) {
             loadHintLayout.setHint(text);
         }
+    }
+
+
+    public void setPageRetryClickListener(Object activityOrFragmentOrView, LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
+        LoadHintLayout loadHintLayout = mLoadHintLayoutMap.get(activityOrFragmentOrView);
+        if (null != loadHintLayout) {
+            loadHintLayout.setPageRetryClick(pageRetryClickListener);
+        }
+    }
+
+    public void setPageRetryClickListener(LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
+        if (mLoadHintLayoutMap.size() == 0) {
+            return;
+        }
+        setPageRetryClickListener(mLoadHintLayoutMap.keySet().iterator().next(), pageRetryClickListener);
     }
 
 }

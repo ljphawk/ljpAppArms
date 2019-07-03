@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import static android.Manifest.permission.ACCESS_NETWORK_STATE;
@@ -43,6 +44,8 @@ public class LoadHintLayout extends FrameLayout {
     public static final int completeType = 0;
     public static final int errorType = 1;
     public static final int emptyType = 2;
+    private LinearLayout mLlHintContent;
+    private PageRetryClickListener mPageRetryClickListener;
 
     public LoadHintLayout(@NonNull Context context) {
         super(context);
@@ -64,7 +67,7 @@ public class LoadHintLayout extends FrameLayout {
             //初始化布局
             initLayout();
         }
-
+        mLlHintContent.setOnClickListener(null);
         switch (type) {
             case LoadHintLayout.completeType:
                 break;
@@ -72,11 +75,17 @@ public class LoadHintLayout extends FrameLayout {
                 // 判断当前网络是否可用
                 if (isNetworkAvailable(getContext())) {
                     setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_request));
-                    setHint("网络请求错误");
+                    setHint("网络请求出错了,点击可重试");
                 } else {
                     setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_nerwork));
-                    setHint("没有网络了");
+                    setHint("可能没有网络了,点击可重试");
                 }
+                //重试的点击回调
+                mLlHintContent.setOnClickListener(v -> {
+                    if (mPageRetryClickListener != null) {
+                        mPageRetryClickListener.pageRetryClick(v);
+                    }
+                });
                 break;
             case LoadHintLayout.emptyType:
                 setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_empty));
@@ -121,6 +130,7 @@ public class LoadHintLayout extends FrameLayout {
         mHintView = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.widget_hint_layout, null);
         mImageView = mHintView.findViewById(R.id.iv_hint_icon);
         mTextView = mHintView.findViewById(R.id.iv_hint_text);
+        mLlHintContent = mHintView.findViewById(R.id.ll_hint_content);
 
         addView(mHintView);
     }
@@ -153,7 +163,11 @@ public class LoadHintLayout extends FrameLayout {
         return (info != null && info.isConnected());
     }
 
-    public View getContentView() {
-        return mContentView;
+    public void setPageRetryClick(PageRetryClickListener pageRetryClickListener) {
+        this.mPageRetryClickListener = pageRetryClickListener;
+    }
+
+    public interface PageRetryClickListener {
+        void pageRetryClick(View view);
     }
 }

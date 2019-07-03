@@ -12,6 +12,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.ljp.base.utils.CommonUtils;
 import com.ljp.titlebar.TitleBar;
 import com.ljp.titlebar.listener.OnLeftClickListener;
+import com.ljp.widget.LoadHintLayout;
 import com.ljphawk.arms.R;
 import com.ljphawk.arms.application.AppManager;
 import com.ljphawk.arms.application.MyApplication;
@@ -159,24 +160,33 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
 
     /**
      *
-     * @param object 针对其他显示的view视图
+     * @param activityOrFragmentOrView 针对其他显示的view视图
      */
-    public void onLoadComplete(Object object) {
-        mStatusManager.showComplete(object);
+    public void onLoadComplete(Object activityOrFragmentOrView) {
+        mStatusManager.showComplete(activityOrFragmentOrView);
     }
 
     /**
      *设置指定对象view为空状态
      */
-    public void onLoadEmpty(Object object) {
-        mStatusManager.showEmpty(object);
+    public void onLoadEmpty(Object activityOrFragmentOrView) {
+        mStatusManager.showEmpty(activityOrFragmentOrView);
     }
 
     /**
      *设置指定对象view为加载错误的状态
      */
-    public void onLoadError(Object object) {
-        mStatusManager.showError(object);
+    public void onLoadError(Object activityOrFragmentOrView) {
+        mStatusManager.showError(activityOrFragmentOrView);
+    }
+
+    /**
+     *设置指定对象view为加载错误的状态
+     * 带点击重试的回调
+     */
+    public void onLoadError(Object activityOrFragmentOrView, LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
+        mStatusManager.showError(activityOrFragmentOrView);
+        mStatusManager.setPageRetryClickListener(activityOrFragmentOrView, pageRetryClickListener);
     }
 
     @Override
