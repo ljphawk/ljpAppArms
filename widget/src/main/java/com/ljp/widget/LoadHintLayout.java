@@ -2,24 +2,19 @@ package com.ljp.widget;
 
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresPermission;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import static android.Manifest.permission.ACCESS_NETWORK_STATE;
 
 
 /*
@@ -31,21 +26,19 @@ import static android.Manifest.permission.ACCESS_NETWORK_STATE;
  *@更新时间         $Date$
  *@更新描述
  */
-public class LoadHintLayout extends FrameLayout {
+public class LoadHintLayout extends RelativeLayout {
 
     //提示布局
-    private ViewGroup mHintView;
+    private View mHintView;
     //提示图标
     private ImageView mImageView;
     //提示文本
     private TextView mTextView;
-    private View mContentView;
 
-    public static final int completeType = 0;
-    public static final int errorType = 1;
-    public static final int emptyType = 2;
-    private LinearLayout mLlHintContent;
     private PageRetryClickListener mPageRetryClickListener;
+
+    private boolean isCanClick = false;
+    private int hintType;
 
     public LoadHintLayout(@NonNull Context context) {
         super(context);
@@ -62,48 +55,27 @@ public class LoadHintLayout extends FrameLayout {
     /**
      * 显示
      */
-    public void show(int type) {
+    public void show(boolean isCanClick) {
+        this.isCanClick = isCanClick;
         if (null == mHintView) {
             //初始化布局
             initLayout();
         }
-        mLlHintContent.setOnClickListener(null);
-        switch (type) {
-            case LoadHintLayout.completeType:
-                break;
-            case LoadHintLayout.errorType:
-                // 判断当前网络是否可用
-                if (isNetworkAvailable(getContext())) {
-                    setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_request));
-                    setHint("网络请求出错了,点击可重试");
-                } else {
-                    setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_nerwork));
-                    setHint("可能没有网络了,点击可重试");
-                }
-                //重试的点击回调
-                mLlHintContent.setOnClickListener(v -> {
-                    if (mPageRetryClickListener != null) {
-                        mPageRetryClickListener.pageRetryClick(v);
-                    }
-                });
-                break;
-            case LoadHintLayout.emptyType:
-                setIcon(ContextCompat.getDrawable(getContext(), R.drawable.icon_hint_empty));
-                setHint("暂无数据");
-                break;
-            default:
-                throw new IllegalArgumentException("loading type non existent");
-        }
 
-        if (type == LoadHintLayout.completeType) {
-            mContentView.setVisibility(VISIBLE);
-            mHintView.setVisibility(GONE);
-        } else {
+        if (!hintIsShow()) {
             mHintView.setVisibility(VISIBLE);
-            mContentView.setVisibility(GONE);
         }
     }
 
+    public void hide() {
+        if (null != mHintView && hintIsShow()) {
+            mHintView.setVisibility(GONE);
+        }
+    }
+
+    public boolean hintIsShow() {
+        return null != mHintView && mHintView.getVisibility() == VISIBLE;
+    }
 
     /**
      * 设置提示图标，请在show方法之后调用
@@ -127,41 +99,37 @@ public class LoadHintLayout extends FrameLayout {
      * 初始化提示的布局
      */
     private void initLayout() {
-        mHintView = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.widget_hint_layout, null);
+        mHintView = LayoutInflater.from(getContext()).inflate(R.layout.widget_hint_layout, this, false);
         mImageView = mHintView.findViewById(R.id.iv_hint_icon);
         mTextView = mHintView.findViewById(R.id.iv_hint_text);
-        mLlHintContent = mHintView.findViewById(R.id.ll_hint_content);
+        LinearLayout llHintContent = mHintView.findViewById(R.id.ll_hint_content);
+        llHintContent.setOnClickListener(v -> {
+            if (mPageRetryClickListener != null && isCanClick) {
+                mPageRetryClickListener.pageRetryClick(v);
+            }
+        });
 
-        addView(mHintView);
-    }
-
-    public void setContentView(View oldContent) {
-        removeView(mContentView);
-        mContentView = oldContent;
-        addView(mContentView);
-        /*
-            重新设置layoutParams是由于有些view可能用了weight（权重），
-            就会导致宽高会为0，本来的宽高大小已经给了LoadHintLayout，
-            所以这里就直接Mach_parent就可以;
-            还有一点就是如果设置了margin，margin其实已经给LoadHintLayout了，contentView自身的margin需要取消
-         */
-        ViewGroup.LayoutParams layoutParams = mContentView.getLayoutParams();
-        if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
-            ((MarginLayoutParams) layoutParams).setMargins(0, 0, 0, 0);
+        if (getBackground() == null) {
+            // 默认使用 windowBackground 作为背景
+            TypedArray ta = getContext().obtainStyledAttributes(new int[]{android.R.attr.windowBackground});
+            setBackground(ta.getDrawable(0));
+            ta.recycle();
         }
-        layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        mContentView.setLayoutParams(layoutParams);
+
+        addView(mHintView,getLayoutParams());
     }
 
-    /**
-     * 判断网络功能是否可用
-     */
-    @RequiresPermission(ACCESS_NETWORK_STATE)
-    private static boolean isNetworkAvailable(Context context) {
-        NetworkInfo info = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-        return (info != null && info.isConnected());
+    @Override
+    public void setBackground(Drawable background) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            super.setBackground(background);
+            mHintView.setBackground(background);
+        } else {
+            setBackgroundDrawable(background);
+            mHintView.setBackgroundDrawable(background);
+        }
     }
+
 
     public void setPageRetryClick(PageRetryClickListener pageRetryClickListener) {
         this.mPageRetryClickListener = pageRetryClickListener;

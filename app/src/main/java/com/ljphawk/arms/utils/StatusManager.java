@@ -1,20 +1,23 @@
 package com.ljphawk.arms.utils;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v4.app.Fragment;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.RequiresPermission;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ljp.dialog.BaseDialog;
 import com.ljp.dialog.LoadingDialog;
 import com.ljp.widget.LoadHintLayout;
+import com.ljphawk.arms.R;
 
-import java.util.HashMap;
-import java.util.Map;
+import static android.Manifest.permission.ACCESS_NETWORK_STATE;
 
 /*
  *@创建者       L_jp
@@ -27,10 +30,10 @@ import java.util.Map;
  */
 public class StatusManager {
 
+    private static final String TAG = "StatusManager";
     private BaseDialog mDialog;
     private String loadMessage = "加载中...";
-    private Context mContext;
-    private Map<Object, LoadHintLayout> mLoadHintLayoutMap = new HashMap<>();
+    private LoadHintLayout mHintLayout;
 
     /**
      * 显示加载中
@@ -65,150 +68,100 @@ public class StatusManager {
         }
     }
 
+
     /**
      * 显示加载完成
      */
     public void showComplete() {
         hideLoading();
-        if (mLoadHintLayoutMap.size() == 0) {
-            return;
+        if (null != mHintLayout) {
+            mHintLayout.hide();
         }
-        showComplete(mLoadHintLayoutMap.keySet().iterator().next());
-    }
-
-    /**
-     * 显示加载完成
-     */
-    public void showComplete(Object activityOrFragmentOrView) {
-        hideLoading();
-        showLayout(activityOrFragmentOrView, LoadHintLayout.completeType);
     }
 
     /**
      * 显示空提示
      */
-    public void showEmpty(Object activityOrFragmentOrView) {
-        showLayout(activityOrFragmentOrView, LoadHintLayout.emptyType);
+    public void showEmpty(View view) {
+        showLayout(view, R.drawable.icon_hint_empty, "暂无数据", false);
     }
 
     /**
      * 显示错误提示
      */
-    public void showError(Object activityOrFragmentOrView) {
-        showLayout(activityOrFragmentOrView, LoadHintLayout.errorType);
+    public void showError(View view) {
+        String hint;
+        int dRes;
+        // 判断当前网络是否可用
+        if (isNetworkAvailable(view.getContext())) {
+            dRes = R.drawable.icon_hint_request;
+            hint = "网络请求出错了,点击可重试";
+        } else {
+            dRes = R.drawable.icon_hint_nerwork;
+            hint = "可能没有网络了,点击可重试";
+        }
+        showLayout(view, dRes, hint, true);
     }
 
     /**
      * 显示布局更改
      */
-    public void showLayout(Object activityOrFragmentOrView, int type) {
-
-        boolean isContain = mLoadHintLayoutMap.containsKey(activityOrFragmentOrView);
-        if (isContain) {
-            LoadHintLayout loadHintLayout = mLoadHintLayoutMap.get(activityOrFragmentOrView);
-            if (null != loadHintLayout) {
-                loadHintLayout.show(type);
-                return;
-            }
-        } else {
-            //如果不包含并且类型还是完成状态不进行下面的操作
-            if (type == LoadHintLayout.completeType) {
-                return;
-            }
-        }
-
-        View contentParent;
-        if (activityOrFragmentOrView instanceof Activity) {
-            Activity activity = (Activity) activityOrFragmentOrView;
-            mContext = activity;
-            contentParent = activity.findViewById(android.R.id.content);
-        } else if (activityOrFragmentOrView instanceof Fragment) {
-            Fragment fragment = (Fragment) activityOrFragmentOrView;
-            mContext = fragment.getActivity();
-            contentParent = (ViewGroup) (fragment.getView().getParent());
-            if (contentParent == null) {
-                throw new IllegalArgumentException("the fragment must already has a parent ,please do not invoke this in onCreateView,you should use this method in onActivityCreated() or onStart");
-            }
-        } else if (activityOrFragmentOrView instanceof View) {
-            View view = (View) activityOrFragmentOrView;
-            contentParent = (ViewGroup) (view.getParent());
-            mContext = view.getContext();
-        } else {
-            throw new IllegalArgumentException("the argument's type must be Fragment or Activity: init(context)");
-        }
-
-        int childCount = ((ViewGroup) contentParent).getChildCount();
-        int index = 0;
-        View oldContent;
-        if (activityOrFragmentOrView instanceof View) {
-            oldContent = (View) activityOrFragmentOrView;
-            for (int i = 0; i < childCount; i++) {
-                if (((ViewGroup) contentParent).getChildAt(i) == oldContent) {
-                    index = i;
-                    break;
-                }
-            }
-        } else {
-            oldContent = ((ViewGroup) contentParent).getChildAt(0);
-        }
-        ((ViewGroup) contentParent).removeView(oldContent);
-        LoadHintLayout loadHintLayout = new LoadHintLayout(mContext);
-        ((ViewGroup) contentParent).addView(loadHintLayout, index, oldContent.getLayoutParams());
-        loadHintLayout.setContentView(oldContent);
-        loadHintLayout.show(type);
-
-        mLoadHintLayoutMap.put(activityOrFragmentOrView, loadHintLayout);
-    }
-
-
-    /**
-     * 设置提示图标
-     */
-    public void setIcon(Drawable drawable) {
-        if (mLoadHintLayoutMap.size() == 0) {
+    public void showLayout(View view, @DrawableRes int iconId, CharSequence hint, boolean isCanClick) {
+        hideLoading();
+        if (view == null) {
+            Log.e(TAG, "showLayout: view is null!!!!!!!!!");
             return;
         }
-        setIcon(mLoadHintLayoutMap.keySet().iterator().next(), drawable);
-    }
 
-    public void setIcon(Object activityOrFragmentOrView, Drawable drawable) {
-        LoadHintLayout loadHintLayout = mLoadHintLayoutMap.get(activityOrFragmentOrView);
-        if (null != loadHintLayout) {
-            loadHintLayout.setIcon(drawable);
+        if (mHintLayout == null) {
+            if (view instanceof LoadHintLayout) {
+                mHintLayout = (LoadHintLayout) view;
+            } else if (view instanceof ViewGroup) {
+                mHintLayout = findHintLayout((ViewGroup) view);
+            }
+
+            if (mHintLayout == null) {
+                throw new IllegalStateException("You didn't add this HintLayout to your Activity layout");
+            }
         }
+
+        mHintLayout.show(isCanClick);
+        mHintLayout.setHint(hint);
+        mHintLayout.setIcon(ContextCompat.getDrawable(view.getContext(), iconId));
     }
 
     /**
-     * 设置提示文本
+     * 判断网络功能是否可用
      */
-
-    public void setHint(CharSequence text) {
-        if (mLoadHintLayoutMap.size() == 0) {
-            return;
-        }
-        setHint(mLoadHintLayoutMap.keySet().iterator().next(), text);
+    @RequiresPermission(ACCESS_NETWORK_STATE)
+    private static boolean isNetworkAvailable(Context context) {
+        NetworkInfo info = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        return (info != null && info.isConnected());
     }
 
-    public void setHint(Object activityOrFragmentOrView, CharSequence text) {
-        LoadHintLayout loadHintLayout = mLoadHintLayoutMap.get(activityOrFragmentOrView);
-        if (null != loadHintLayout) {
-            loadHintLayout.setHint(text);
-        }
-    }
-
-
-    public void setPageRetryClickListener(Object activityOrFragmentOrView, LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
-        LoadHintLayout loadHintLayout = mLoadHintLayoutMap.get(activityOrFragmentOrView);
-        if (null != loadHintLayout) {
-            loadHintLayout.setPageRetryClick(pageRetryClickListener);
-        }
-    }
-
+    /**
+     *重试的点击事件回调
+     */
     public void setPageRetryClickListener(LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
-        if (mLoadHintLayoutMap.size() == 0) {
-            return;
+        if (null != mHintLayout) {
+            mHintLayout.setPageRetryClick(pageRetryClickListener);
         }
-        setPageRetryClickListener(mLoadHintLayoutMap.keySet().iterator().next(), pageRetryClickListener);
     }
 
+
+    /**
+     * 智能获取布局中的 HintLayout 对象
+     */
+    private static LoadHintLayout findHintLayout(ViewGroup group) {
+        for (int i = 0; i < group.getChildCount(); i++) {
+            View view = group.getChildAt(i);
+            if ((view instanceof LoadHintLayout)) {
+                return (LoadHintLayout) view;
+            } else if (view instanceof ViewGroup) {
+                LoadHintLayout layout = findHintLayout((ViewGroup) view);
+                if (layout != null) return layout;
+            }
+        }
+        return null;
+    }
 }

@@ -18,9 +18,17 @@ import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
-/**
- *ljp
+
+/*
+ *@创建者       L_jp
+ *@创建时间     2018/7/5 10:12.
+ *@描述         ${""}
+ *
+ *@更新者         $Author$
+ *@更新时间         $Date$
+ *@更新描述         ${""}
  */
+
 
 public abstract class BaseFragment<P extends BasePresenter> extends Fragment implements BaseView {
     public Context mContext;
@@ -30,7 +38,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     protected P presenter;
     private final StatusManager mStatusManager = new StatusManager();
     // 根布局
-    private View mRootView;
+    protected View mRootView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +76,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
         presenter = initPresenter();
         if (null != presenter) {
-            presenter.attach( this);
+            presenter.attach(this);
         }
         initView(view, savedInstanceState);
         initData(view, savedInstanceState);
@@ -116,7 +124,7 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
 
     @Override
     public void showLoading(String content) {
-        mStatusManager.showLoading(getActivity(),content);
+        mStatusManager.showLoading(getActivity(), content);
     }
 
     @Override
@@ -124,40 +132,42 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
         mStatusManager.hideLoading();
     }
 
-    /**
-     * 加载完成，如果不传object的话，
-     * 默认显示回当时第一个设置empty或者error的object
+    /*
+     * 加载完成
      */
     @Override
     public void onLoadComplete() {
         mStatusManager.showComplete();
     }
 
-    /**
-     *
-     * @param activityOrFragmentOrView 针对其他显示的view视图
+    /*
+     *设置为空状态
      */
-    public void onLoadComplete(Object activityOrFragmentOrView) {
-        mStatusManager.showComplete(activityOrFragmentOrView);
+    public void onLoadEmpty() {
+        mStatusManager.showEmpty(mRootView);
     }
 
-    /**
-     *设置指定对象view为空状态
+    /*
+     *设置为加载错误的状态
      */
-    public void onLoadEmpty(Object activityOrFragmentOrView) {
-        mStatusManager.showEmpty(activityOrFragmentOrView);
+    public void onLoadError() {
+        mStatusManager.showError(mRootView);
     }
 
-    /**
-     *设置指定对象view为加载错误的状态
+    /*
+     *设置为加载错误的状态
+     * 带点击重试的回调
      */
-    public void onLoadError(Object activityOrFragmentOrView) {
-        mStatusManager.showError(activityOrFragmentOrView);
+    public void onLoadError(LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
+        mStatusManager.showError(mRootView);
+        mStatusManager.setPageRetryClickListener(pageRetryClickListener);
     }
 
-    public void onLoadError(Object activityOrFragmentOrView, LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
-        mStatusManager.showError(activityOrFragmentOrView);
-        mStatusManager.setPageRetryClickListener(activityOrFragmentOrView, pageRetryClickListener);
+    /*
+       显示其他样式的布局
+     */
+    public void showHintLayout(int drawable, CharSequence hint, boolean isCanClick) {
+        mStatusManager.showLayout(mRootView, drawable, hint, isCanClick);
     }
 
 

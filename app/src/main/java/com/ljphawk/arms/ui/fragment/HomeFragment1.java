@@ -20,6 +20,9 @@ import com.ljphawk.arms.base.BasePresenter;
  *@更新描述
  */
 public class HomeFragment1 extends BaseFragment {
+
+    private int index = 0;
+
     @Override
     protected View resFragmentView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_layout1, container, false);
@@ -32,12 +35,7 @@ public class HomeFragment1 extends BaseFragment {
 
     @Override
     protected void initView(View view, Bundle savedInstanceState) {
-        view.findViewById(R.id.bt_show_dialog).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
     }
 
     @Override

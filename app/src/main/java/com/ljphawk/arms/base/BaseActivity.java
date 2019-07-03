@@ -24,9 +24,17 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 
-/**
- * Created by Host-0 on 2017/1/16.
+
+/*
+ *@创建者       L_jp
+ *@创建时间     2018/7/5 10:12.
+ *@描述         ${""}
+ *
+ *@更新者         $Author$
+ *@更新时间         $Date$
+ *@更新描述         ${""}
  */
+
 
 public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity implements BaseView, OnLeftClickListener {
 
@@ -149,44 +157,43 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         mStatusManager.hideLoading();
     }
 
-    /**
-     * 加载完成，如果不传object的话，
-     * 默认显示回当时第一个设置empty或者error的object
+    /*
+     * 加载完成
      */
     @Override
     public void onLoadComplete() {
         mStatusManager.showComplete();
     }
 
-    /**
-     *
-     * @param activityOrFragmentOrView 针对其他显示的view视图
+
+    /*
+     *设置为空状态
      */
-    public void onLoadComplete(Object activityOrFragmentOrView) {
-        mStatusManager.showComplete(activityOrFragmentOrView);
+    public void onLoadEmpty() {
+        mStatusManager.showEmpty(getContentView());
     }
 
-    /**
-     *设置指定对象view为空状态
+    /*
+     *设置为加载错误的状态
      */
-    public void onLoadEmpty(Object activityOrFragmentOrView) {
-        mStatusManager.showEmpty(activityOrFragmentOrView);
+    public void onLoadError() {
+        mStatusManager.showError(getContentView());
     }
 
-    /**
-     *设置指定对象view为加载错误的状态
-     */
-    public void onLoadError(Object activityOrFragmentOrView) {
-        mStatusManager.showError(activityOrFragmentOrView);
-    }
-
-    /**
-     *设置指定对象view为加载错误的状态
+    /*
+     *设置为加载错误的状态
      * 带点击重试的回调
      */
-    public void onLoadError(Object activityOrFragmentOrView, LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
-        mStatusManager.showError(activityOrFragmentOrView);
-        mStatusManager.setPageRetryClickListener(activityOrFragmentOrView, pageRetryClickListener);
+    public void onLoadError(LoadHintLayout.PageRetryClickListener pageRetryClickListener) {
+        mStatusManager.showError(getContentView());
+        mStatusManager.setPageRetryClickListener(pageRetryClickListener);
+    }
+
+    /*
+       显示其他样式的布局
+     */
+    public void showHintLayout(int drawable, CharSequence hint, boolean isCanClick) {
+        mStatusManager.showLayout(getContentView(), drawable, hint, isCanClick);
     }
 
     @Override
@@ -255,5 +262,12 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     public RequestUrlUtils getRequest() {
         return RequestUrlUtils.getInstance();
+    }
+
+    /**
+     * 和 setContentView 对应的方法
+     */
+    public View getContentView() {
+        return getWindow().getDecorView();
     }
 }
