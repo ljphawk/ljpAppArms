@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 
 import com.ljp.dialog.BaseDialog;
 import com.ljp.dialog.LoadingDialog;
-import com.ljp.widget.LoadHintLayout;
+import com.ljphawk.arms.widget.LoadHintLayout;
 import com.ljphawk.arms.R;
 
 import static android.Manifest.permission.ACCESS_NETWORK_STATE;

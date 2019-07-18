@@ -12,7 +12,7 @@ import com.gyf.immersionbar.ImmersionBar;
 import com.ljp.base.utils.CommonUtils;
 import com.ljp.titlebar.TitleBar;
 import com.ljp.titlebar.listener.OnLeftClickListener;
-import com.ljp.widget.LoadHintLayout;
+import com.ljphawk.arms.widget.LoadHintLayout;
 import com.ljphawk.arms.R;
 import com.ljphawk.arms.application.AppManager;
 import com.ljphawk.arms.application.MyApplication;

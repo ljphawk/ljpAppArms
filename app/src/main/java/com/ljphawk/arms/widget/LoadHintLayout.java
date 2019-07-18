@@ -1,4 +1,4 @@
-package com.ljp.widget;
+package com.ljphawk.arms.widget;
 
 
 import android.content.Context;
@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.ljphawk.arms.R;
 
 
 /*
@@ -38,7 +40,6 @@ public class LoadHintLayout extends RelativeLayout {
     private PageRetryClickListener mPageRetryClickListener;
 
     private boolean isCanClick = false;
-    private int hintType;
 
     public LoadHintLayout(@NonNull Context context) {
         super(context);

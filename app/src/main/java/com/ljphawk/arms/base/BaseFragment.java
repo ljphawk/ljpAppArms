@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ljp.widget.LoadHintLayout;
+import com.ljphawk.arms.widget.LoadHintLayout;
 import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
 import com.ljphawk.arms.utils.StatusManager;

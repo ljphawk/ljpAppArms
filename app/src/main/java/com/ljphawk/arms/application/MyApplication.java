@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.tencent.smtt.sdk.QbSdk;
 
 /*
  *@创建者       L_jp
@@ -25,7 +26,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         mContext = this;
-
+        //Fresco
         Fresco.initialize(mContext);
+        //x5WebView
+        QbSdk.initX5Environment(mContext,null);
     }
 }
