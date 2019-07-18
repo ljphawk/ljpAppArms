@@ -1,4 +1,4 @@
-#base 
+#base
 为公用libs，存放工具类，colors，style
 
 #bottomTab
@@ -21,12 +21,28 @@ new BaseDialogFragment.Builder(this)
 .setAnimStyle(BaseDialog.AnimStyle.SCALE)
 .show();
 
-#widget
-存放通用的自定义View
-
-
 #LoadHintLayout
 设置页面的空状态或者加载错误的状态；
 封装在BaseActivity和BaseFragment中；
 需要操作的布局必须用LoadHintLayout嵌套；
 调用onLoadComplete、onLoadEmpty、onLoadError
+
+
+#base基类的介绍
+目前总体来看
+BaseActivity、BasePresenter、BaseView 为一套
+BaseRefreshActivity、BasePresenter、BaseRefreshView 为一套
+
+BaseActivity中可操作toast、显示或隐藏loading
+BasePresenter中可通过getView操作toast、显示或隐藏loading
+BaseRefreshActivity的presenter的getView增加了完成刷新和完成加载的方法
+
+BaseActivity：
+1，正常使用mvp，TestActivity extends BaseActivity<TestPresenter> implements TestView{...} (具体可看MainActivity)
+2，如果一个页面逻辑比较少，觉得没有必要增加presenter的话 直接TestActivity extends BaseActivity{...}
+
+BaseRefreshActivity:
+大致同BaseActivity用法无区别，只是要继承BaseRefreshActivity，实现BaseRefreshView
+TestActivity extends BaseRefreshActivity<TestPresenter> implements BaseRefreshView{...}
+或
+TestActivity extends BaseRefreshActivity{...}

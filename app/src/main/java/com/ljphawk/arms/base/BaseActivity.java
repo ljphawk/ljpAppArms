@@ -50,11 +50,14 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(resView());
-        //添加activity
-        AppManager.getInstance().addActivity(this);
         mContext = this;
         TAG = mContext.getClass().getSimpleName();
+        int layoutId = resView();
+        if (layoutId > 0) {
+            setContentView(resView());
+        }
+        //添加activity
+        AppManager.getInstance().addActivity(this);
         //沉浸式
         initImmersionBar();
         //disposables

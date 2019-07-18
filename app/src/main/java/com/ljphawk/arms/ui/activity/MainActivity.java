@@ -78,7 +78,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     public void tabItemClick(int position, String name, View view) {
         mMainBottomTab.setTabSelect(position);
         showContentFragment(position);
-        WebViewActivity.startActivity(mContext,"https://www.baidu.com");
     }
 
     /*
