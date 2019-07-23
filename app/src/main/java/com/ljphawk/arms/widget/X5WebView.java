@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.JavascriptInterface;
 
@@ -29,9 +28,9 @@ public class X5WebView extends WebView {
     private boolean isCleanHistory;
 
     public X5WebView(Context context) {
-        this(context,null);
-
+        this(context, null);
     }
+
     @SuppressLint("SetJavaScriptEnabled")
     public X5WebView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
@@ -55,18 +54,20 @@ public class X5WebView extends WebView {
         super(context, attributeSet, i);
     }
 
-    public void webViewLoadUrl(WebView webView, String url) {
-        if (!CommonUtils.StringHasValue(url)) {
-            url = webView.getUrl();
-        }
-        webView.loadUrl(url);
+    /**
+     * 加载url
+     * @param url
+     */
+    public void webViewLoadUrl(String url) {
+        url = null == url ? "" : url;
+        loadUrl(url);
     }
 
     public void setCleanHistory(boolean cleanHistory) {
         isCleanHistory = cleanHistory;
     }
 
-    public void setActivity(Activity activity){
+    public void setActivity(Activity activity) {
         this.mActivity = activity;
     }
 
@@ -95,8 +96,6 @@ public class X5WebView extends WebView {
             return super.onJsAlert(null, arg1, arg2, arg3);
         }
     };
-
-
 
 
     private void initWebViewSettings() {
@@ -140,7 +139,6 @@ public class X5WebView extends WebView {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (!CommonUtils.StringHasValue(url)) {
-                webViewLoadUrl(view, "");
                 return true;
             }
 
@@ -148,44 +146,40 @@ public class X5WebView extends WebView {
                 try {
                     if (url.startsWith("phone://")) {//如果是打电话
                         Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + url.substring(8, url.length())));
+                        intent.setData(Uri.parse("tel:" + url.substring(8)));
                         mContext.startActivity(intent);
                     } else if (url.startsWith("email://")) {//发邮件
                         try {
                             Intent data = new Intent(Intent.ACTION_SENDTO);
-                            data.setData(Uri.parse("mailto:" + url.substring(8, url.length())));
+                            data.setData(Uri.parse("mailto:" + url.substring(8)));
                             mContext.startActivity(data);
                         } catch (Exception e) {
+                            e.printStackTrace();
                             if (e instanceof ActivityNotFoundException) {
-                                ToastUtils.showToast( "手机中没有安装邮件app");
+                                ToastUtils.showToast("手机中没有安装邮件app");
                             }
                         }
                     } else if (url.startsWith("copy://")) { //拷贝
-                        String substring = url.substring(7, url.length());
+                        String substring = url.substring(7);
                         ClipboardManager cmb = (ClipboardManager) mContext
                                 .getSystemService(Context.CLIPBOARD_SERVICE);
-                        cmb.setText(substring);
-                        ToastUtils.showToast( "已复制到剪贴板");
+                        if (null != cmb) {
+                            cmb.setText(substring);
+                            ToastUtils.showToast("已复制到剪贴板");
+                        }
                     } else {
                         Uri parse = Uri.parse(url);
                         String scheme = parse.getScheme();
-                        if (scheme != null && !TextUtils.isEmpty(scheme)) {
-                            try {
-                                mContext.startActivity(new Intent(Intent.ACTION_VIEW, parse));
-                            } catch (Exception e) {
-
-                            }
+                        if (CommonUtils.StringHasValue(scheme)) {
+                            mContext.startActivity(new Intent(Intent.ACTION_VIEW, parse));
                         }
                     }
                     return true;
                 } catch (Exception e) { //防止crash (如果手机上没有安装处理某个scheme开头的url的APP, 会导致crash)
-                    webViewLoadUrl(view, "");
                     return true;
                 }
-            } else {
-                webViewLoadUrl(view, url);
-                return true;
             }
+            return super.shouldOverrideUrlLoading(view, url);
         }
 
         @Override

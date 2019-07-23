@@ -49,7 +49,6 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements W
     @Override
     protected void initView(Bundle savedInstanceState) {
         mWebView = findViewById(R.id.web_view);
-
     }
 
     @Override
@@ -58,9 +57,8 @@ public class WebViewActivity extends BaseActivity<WebViewPresenter> implements W
         Intent intent = getIntent();
         mLoadUrl = intent.getStringExtra(loadUrlExtra);
         mWebView.setOnReceivedTitleListener(this::setTitleBarTitle);
-        mWebView.loadUrl(mLoadUrl);
+        mWebView.webViewLoadUrl(mLoadUrl);
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
