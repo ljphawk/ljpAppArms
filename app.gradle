@@ -9,6 +9,6 @@ ext {
     ]
 
     version = [
-               androidSupportSdkVersion: "27.1.1"
+               androidSupportSdkVersion: "26.1.0"
     ]
 }
