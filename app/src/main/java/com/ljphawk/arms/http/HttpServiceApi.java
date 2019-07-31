@@ -1,13 +1,19 @@
 package com.ljphawk.arms.http;
 
-import io.reactivex.Observable;
+import io.reactivex.Flowable;
 import okhttp3.ResponseBody;
 import retrofit2.http.GET;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 
-/**
- * ljp
+/*
+ *@创建者       L_jp
+ *@创建时间     2019/7/29 15:05.
+ *@描述
+ *
+ *@更新者         $Author$
+ *@更新时间         $Date$
+ *@更新描述
  */
 
 public interface HttpServiceApi {
@@ -19,6 +25,6 @@ public interface HttpServiceApi {
     //下载文件
     @Streaming //大文件时要加不然会OOM
     @GET
-    Observable<ResponseBody> downloadFile(@Url String fileUrl);
+    Flowable<ResponseBody> downloadFile(@Url String fileUrl);
 
 }

@@ -12,12 +12,10 @@ package com.ljphawk.arms.http;
  *@更新描述         ${""}
  */
 
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import io.reactivex.Flowable;
 import okhttp3.ResponseBody;
 
-public class RequestUrlUtils {
+public class RequestUrlUtils extends BaseHttpUtils {
 
     private static HttpServiceApi mHttpServiceInstance;
     private static RequestUrlUtils sRequestUrlUtils;
@@ -40,7 +38,8 @@ public class RequestUrlUtils {
         return sRequestUrlUtils;
     }
 
-    public Observable<ResponseBody> downloadFile(String fileUrl) {
-        return mHttpServiceInstance.downloadFile(fileUrl).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    public Flowable<ResponseBody> downloadFile(String fileUrl) {
+        return transformFull(mHttpServiceInstance.downloadFile(fileUrl));
     }
+
 }

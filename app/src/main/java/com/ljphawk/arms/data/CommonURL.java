@@ -17,19 +17,34 @@ import com.ljphawk.arms.utils.SPUtils;
 
 
 public class CommonURL {
-
-    //根地址
-    private static final String BASE_URL_RELEASE = "https://api.ishiguangji.cn/";//正式  2
-    private static final String BASE_URL_TEST = "https://test-api.ishiguangji.cn/";//测试 1
-    private static final String BASE_URL_TEST2 = "http://48733h.natappfree.cc/shiguangji/public/index.php/";//穿透地址
+    /**
+     * api的接口域名
+     */
+    //BASE_URL
     public static final String BASE_URL = getBaseUrl();
+    //正式地址
+    private static final String BASE_URL_RELEASE = "https://test-api.woniudanci.com/";
+    //测试 1
+    private static final String BASE_URL_TEST = "https://test-api.woniudanci.com/";
+    //穿透地址
+    private static final String BASE_URL_TEST2 = "https://test-api.woniudanci.com/";
 
-    //html的路径域名
-    private static final String BASE_WEB_URL_RELEASE = "https://www.ishiguangji.cn/";//正式  2
-    private static final String BASE_WEB_URL_TEST = "https://test-static.ishiguangji.cn/web/";//测试 1
-    private static final String BASE_WEB_URL_TEST2 = BASE_URL_TEST2;//穿透地址
+    /**
+     *html的路径域名
+     */
+    //BASE_WEB_URL
     private static final String BASE_WEB_URL = getBaseWebUrl();
+    //正式
+    private static final String BASE_WEB_URL_RELEASE = "https://www.ishiguangji.cn/";
+    //测试
+    private static final String BASE_WEB_URL_TEST = "https://test-static.ishiguangji.cn/web/";
+    //穿透地址
+    private static final String BASE_WEB_URL_TEST2 = BASE_URL_TEST2;//穿透地址
 
+    /**
+     * 获取h5的baseUrl
+     * @return
+     */
     private static String getBaseWebUrl() {
         if (!MyApplication.isDebug) {//线上模式
             return BASE_WEB_URL_RELEASE;
@@ -49,7 +64,11 @@ public class CommonURL {
         return BASE_WEB_URL_RELEASE;
     }
 
-    public static String getBaseUrl() {
+    /**
+     * 获取api的baseUrl
+     * @return
+     */
+    private static String getBaseUrl() {
         if (!MyApplication.isDebug) {//线上模式
             return BASE_URL_RELEASE;
         } else {//debug
