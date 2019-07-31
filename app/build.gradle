@@ -10,6 +10,7 @@ android {
         targetSdkVersion rootProject.ext.android["targetSdkVersion"]
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -51,6 +52,7 @@ configurations.all {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.3'
     implementation "com.android.support:appcompat-v7:${rootProject.ext.version["androidSupportSdkVersion"]}"
     implementation "com.android.support:design:${rootProject.ext.version["androidSupportSdkVersion"]}"
     // Dex分包，解决 64k 问题

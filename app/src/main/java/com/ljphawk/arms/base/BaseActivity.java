@@ -81,7 +81,7 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
             mTitleBar.setLeftOnClickListener(this);
         }
         mImmersionBar.keyboardEnable(true) //解决软键盘与底部输入框冲突问题
-                .statusBarDarkFont(true, 0.2f)//true是深色，false是白色 如果不能改变状态栏的颜色 就用后面0.2f的透明度
+//                .statusBarDarkFont(true, 0.2f)//true是深色，false是白色 如果不能改变状态栏的颜色 就用后面0.2f的透明度
                 .keyboardMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
                 .init();   //所有子类都将继承这些相同的属性
     }
@@ -125,7 +125,6 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         if (CommonUtils.StringHasValue(title)) {
             if (null != mTitleBar) {
                 mTitleBar.setTitle(title);
-
             }
         }
     }
