@@ -1,5 +1,6 @@
 package com.ljphawk.arms.base;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,11 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.ljphawk.arms.widget.LoadHintLayout;
 import com.ljphawk.arms.application.MyApplication;
 import com.ljphawk.arms.http.RequestUrlUtils;
 import com.ljphawk.arms.utils.StatusManager;
 import com.ljphawk.arms.utils.ToastUtils;
+import com.ljphawk.arms.widget.LoadHintLayout;
 
 import io.reactivex.annotations.Nullable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -216,5 +217,10 @@ public abstract class BaseFragment<P extends BasePresenter> extends Fragment imp
     @Override
     public RequestUrlUtils getRequest() {
         return RequestUrlUtils.getInstance();
+    }
+
+    @Override
+    public Activity getActivitys() {
+        return this.getActivity();
     }
 }

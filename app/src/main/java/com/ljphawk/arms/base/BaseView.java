@@ -56,4 +56,9 @@ public interface BaseView {
      */
     void onLoadComplete();
 
+    /**
+     * 获取当前的activity对象 getview返回的是动态代理的对象，不能做activity使用
+     * @return
+     */
+    Activity getActivitys();
 }

@@ -167,6 +167,10 @@ public abstract class BaseActivity<P extends BasePresenter> extends AppCompatAct
         mStatusManager.showComplete();
     }
 
+    @Override
+    public Activity getActivitys() {
+        return this;
+    }
 
     /*
      *设置为空状态
