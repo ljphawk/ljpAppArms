@@ -6,11 +6,11 @@
     android:background="@android:color/white"
     android:layout_height="match_parent">
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <ImageView
         android:id="@+id/sdv_splash"
         android:layout_width="match_parent"
-        app:actualImageResource="@drawable/img_splash"
-        app:actualImageScaleType="focusCrop"
+        android:src="@drawable/img_splash"
+        android:scaleType="fitXY"
         android:layout_height="match_parent"/>
 
 </RelativeLayout>

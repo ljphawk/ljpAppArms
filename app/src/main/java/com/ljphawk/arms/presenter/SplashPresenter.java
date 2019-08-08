@@ -1,12 +1,7 @@
 package com.ljphawk.arms.presenter;
 
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-
-import com.ljphawk.arms.R;
 import com.ljphawk.arms.base.BasePresenter;
-import com.ljphawk.arms.ui.fragment.SplashFragment;
 import com.ljphawk.arms.ui.view.SplashView;
 
 /*

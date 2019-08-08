@@ -79,7 +79,7 @@ dependencies {
     //fresco 支持 GIF 动图，需要添加
     implementation 'com.facebook.fresco:animated-gif:1.13.0'
     //6.0权限适配
-    implementation 'com.hjq:xxpermissions:5.5'
+    implementation 'com.hjq:xxpermissions:6.0'
     implementation project(':base')
     implementation project(':titlebar')
     implementation project(':bottomtab')

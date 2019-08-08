@@ -1,5 +1,7 @@
 package com.ljphawk.arms.ui.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -14,25 +16,26 @@ import com.ljphawk.arms.base.BaseActivity;
 import com.ljphawk.arms.base.BaseFragment;
 import com.ljphawk.arms.base.FragmentFactory;
 import com.ljphawk.arms.presenter.MainPresenter;
-import com.ljphawk.arms.ui.fragment.SplashFragment;
 import com.ljphawk.arms.ui.view.MainView;
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainView, BottomTabItemClickListener {
 
     private long mFirstPressedTime = 0;
     private MainBottomTab mMainBottomTab;
+    private BaseFragment mFragment;
+
+    public static void startActivity(Context context){
+        context.startActivity(new Intent(context, MainActivity.class));
+    }
+
 
     @Override
     protected int resView() {
-        setTheme(R.style.AppTheme);
         return R.layout.activity_main;
     }
 
     @Override
     protected void initView(Bundle savedInstanceState) {
-        //显示闪屏的fragment
-        showSplashFragment();
-
         mMainBottomTab = findViewById(R.id.bottom_tab);
     }
 
@@ -52,31 +55,10 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         showContentFragment(0);
     }
 
-    private BaseFragment mFragment;
 
-    /**
-     * 展示Splash
-     */
-    private void showSplashFragment() {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        SplashFragment splashFragment = (SplashFragment) getSupportFragmentManager().findFragmentByTag(SplashFragment.class.getSimpleName());
-        if (splashFragment != null) {
-            if (splashFragment.isAdded()) {
-                transaction.show(splashFragment).commitAllowingStateLoss();
-            } else {
-                transaction.remove(splashFragment).commitAllowingStateLoss();
-                splashFragment = SplashFragment.newInstance();
-                transaction.add(R.id.fl_splash_content, splashFragment, SplashFragment.class.getSimpleName()).commitAllowingStateLoss();
-            }
-        } else {
-            splashFragment = SplashFragment.newInstance();
-            transaction.add(R.id.fl_splash_content, splashFragment, SplashFragment.class.getSimpleName()).commitAllowingStateLoss();
-        }
-    }
 
     @Override
     public void tabItemClick(int position, String name, View view) {
-        mMainBottomTab.setTabSelect(position);
         showContentFragment(position);
     }
 
@@ -84,6 +66,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     切换fragment
      */
     private void showContentFragment(int position) {
+        if (null != mMainBottomTab) {
+            mMainBottomTab.setTabSelect(position);
+        }
         FragmentFactory fragmentFactory = FragmentFactory.getInstance();
         BaseFragment fragment = fragmentFactory.getFragment(position);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -111,7 +96,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         }
     }
 
-
     @Override
     public void onBackPressed() {
         if (System.currentTimeMillis() - mFirstPressedTime < 2000) {
@@ -122,7 +106,6 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             mFirstPressedTime = System.currentTimeMillis();
         }
     }
-
 
     @Override
     protected void onDestroy() {

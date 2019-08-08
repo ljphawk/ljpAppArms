@@ -40,20 +40,29 @@
             android:value="667"/>
 
         <activity
-            android:name=".ui.activity.MainActivity"
+            android:name=".ui.activity.SplashActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/SplashAppTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+
             <intent-filter>
                 <data
-                    android:host="wndc.woniudanci.com"
+                    android:host="study.woniudanci.com"
                     android:path="/main_home"
                     android:scheme="wndc"/>
-                <!--  wndc://wndc.woniudanci.com/main_home?  -->
+                <!--  wndc://study.woniudanci.com/main_home?  -->
 
                 <!--scheme跳转必须的-->
                 <category android:name="android.intent.category.DEFAULT"/>
