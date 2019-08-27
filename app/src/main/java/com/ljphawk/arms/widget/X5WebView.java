@@ -8,7 +8,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.webkit.JavascriptInterface;
 
@@ -102,7 +101,6 @@ public class X5WebView extends WebView {
         WebSettings webSetting = this.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDefaultTextEncodingName("utf-8");
-        ;
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
         webSetting.setAllowFileAccess(true);
         webSetting.setLayoutAlgorithm(LayoutAlgorithm.NARROW_COLUMNS);
@@ -117,14 +115,9 @@ public class X5WebView extends WebView {
         webSetting.setDisplayZoomControls(false);
         webSetting.setGeolocationEnabled(true);
         webSetting.setAppCacheMaxSize(Long.MAX_VALUE);
-        // webSetting.setPageCacheCapacity(IX5WebSettings.DEFAULT_CACHE_CAPACITY);
         webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
         // webSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
         webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            webSetting.setMixedContentMode(android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
-        }
 
         webSetting.setUserAgentString(webSetting.getUserAgentString() + "liujunpeng");
         // this.getSettingsExtension().setPageCacheCapacity(IX5WebSettings.DEFAULT_CACHE_CAPACITY);//extension

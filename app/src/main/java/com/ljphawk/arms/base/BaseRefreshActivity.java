@@ -4,7 +4,6 @@ package com.ljphawk.arms.base;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.ljphawk.arms.R;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -43,8 +42,8 @@ public abstract class BaseRefreshActivity<P extends BasePresenter> extends BaseA
         View parentView = inflater.inflate(R.layout.layout_base_refresh, null);
         View contentView = inflater.inflate(refreshContentView(), null);
         mSmartRefreshLayout = parentView.findViewById(R.id.smartRefreshLayout);
-        //第0个放的是ClassicsHeader
-        mSmartRefreshLayout.addView(contentView, 1, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        //设置刷新布局
+        mSmartRefreshLayout.setRefreshContent(contentView);
         setContentView(parentView);
 
         initRefreshData();
