@@ -115,8 +115,8 @@
 }
 
 #沉浸式混淆 ImmersionBar
--keep class com.gyf.barlibrary.* {*;}
--dontwarn com.gyf.barlibrary.**
+-keep class com.gyf.immersionbar.* {*;}
+-dontwarn com.gyf.immersionbar.**
 
 #今日头条适配
  -keep class me.jessyan.autosize.** { *; }
@@ -132,7 +132,8 @@
 # Retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature-keepattributes Exceptions
+-keepattributes Signature
+-keepattributes Exceptions
 # RxJava RxAndroid
 -dontwarn sun.misc.**
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {

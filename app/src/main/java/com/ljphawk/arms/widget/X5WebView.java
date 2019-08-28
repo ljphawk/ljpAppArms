@@ -1,56 +1,67 @@
 package com.ljphawk.arms.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.webkit.JavascriptInterface;
 
 import com.ljp.base.utils.CommonUtils;
-import com.ljphawk.arms.listener.WebViewJavaScriptFunction;
-import com.ljphawk.arms.utils.ThreadUtil;
+import com.ljphawk.arms.base.BaseActivity;
+import com.ljphawk.arms.utils.WebViewJavaScriptFunction;
 import com.ljphawk.arms.utils.ToastUtils;
 import com.tencent.smtt.export.external.interfaces.JsResult;
+import com.tencent.smtt.export.external.interfaces.SslError;
+import com.tencent.smtt.export.external.interfaces.SslErrorHandler;
 import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebSettings.LayoutAlgorithm;
 import com.tencent.smtt.sdk.WebView;
+import com.tencent.smtt.sdk.WebViewClient;
+
+/*
+ *@创建者       L_jp
+ *@创建时间     2018/08/07 10:12.
+ *@描述         ${""}
+ *
+ *@更新者         $Author$
+ *@更新时间         $Date$
+ *@更新描述         ${""}
+ */
+
 
 public class X5WebView extends WebView {
-    private Activity mActivity;
+    private BaseActivity mActivity;
     private Context mContext;
     private boolean isCleanHistory;
 
-    public X5WebView(Context context) {
-        this(context, null);
+    //最好通过new的方式然后addView进布局
+    public X5WebView(Context context, BaseActivity activity) {
+        super(context);
+        this.mContext = context;
+        this.mActivity = activity;
+        initWebView();
+        addJavascriptInterface(new WebViewJavaScriptFunction(mActivity,this) , "wndc");
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
+    //通过xml方式引入的话，一定要调用setActivity()
     public X5WebView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-
         this.mContext = context;
+        initWebView();
+    }
 
-        this.getView().setClickable(true);
+    private void initWebView() {
         initWebViewSettings();
-        this.setWebChromeClient(chromeClient);
-        this.setWebViewClient(new SelfWebViewClient());
-        // WebStorage webStorage = WebStorage.getInstance();
-
-        this.setDownloadListener((s, s1, s2, s3, l) -> {
+        setWebChromeClient(chromeClient);
+        setWebViewClient(new SelfWebViewClient());
+        setDownloadListener((s, s1, s2, s3, l) -> {
             Uri uri = Uri.parse(s);
             Intent intent = new Intent(Intent.ACTION_VIEW, uri);
             mContext.startActivity(intent);
         });
-    }
-
-    public X5WebView(Context context, AttributeSet attributeSet, int i) {
-        super(context, attributeSet, i);
     }
 
     /**
@@ -66,68 +77,61 @@ public class X5WebView extends WebView {
         isCleanHistory = cleanHistory;
     }
 
-    public void setActivity(Activity activity) {
+    public void setActivity(BaseActivity activity) {
         this.mActivity = activity;
+        addJavascriptInterface(new WebViewJavaScriptFunction(mActivity,this) , "wndc");
     }
 
     private WebChromeClient chromeClient = new WebChromeClient() {
-        @Override
-        public void onReceivedTitle(WebView webView, String s) {
-            super.onReceivedTitle(webView, s);
-            if (mOnReceivedTitleListener != null) {
-                mOnReceivedTitleListener.onReceivedTitle(s);
-            }
 
+        @Override
+        public void onReceivedTitle(WebView webView, String title) {
+            super.onReceivedTitle(webView, title);
+            if (mActivity != null) {
+                mActivity.setTitleBarTitle(title);
+            }
         }
 
         @Override
-        public boolean onJsConfirm(WebView arg0, String arg1, String arg2,
-                                   JsResult arg3) {
+        public boolean onJsConfirm(WebView arg0, String arg1, String arg2, JsResult arg3) {
             return super.onJsConfirm(arg0, arg1, arg2, arg3);
         }
 
         @Override
-        public boolean onJsAlert(WebView arg0, String arg1, String arg2,
-                                 JsResult arg3) {
-            /**
-             * 这里写入你自定义的window alert
-             */
+        public boolean onJsAlert(WebView arg0, String arg1, String arg2, JsResult arg3) {
+            //这里写入你自定义的window alert
             return super.onJsAlert(null, arg1, arg2, arg3);
         }
+
     };
 
 
+    @SuppressLint("SetJavaScriptEnabled")
     private void initWebViewSettings() {
         WebSettings webSetting = this.getSettings();
         webSetting.setJavaScriptEnabled(true);
         webSetting.setDefaultTextEncodingName("utf-8");
         webSetting.setJavaScriptCanOpenWindowsAutomatically(true);
         webSetting.setAllowFileAccess(true);
-        webSetting.setLayoutAlgorithm(LayoutAlgorithm.NARROW_COLUMNS);
+        webSetting.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         webSetting.setSupportZoom(true);
         webSetting.setBuiltInZoomControls(true);
         webSetting.setUseWideViewPort(true);
         webSetting.setSupportMultipleWindows(true);
         webSetting.setLoadWithOverviewMode(true);
         webSetting.setAppCacheEnabled(true);
-        // webSetting.setDatabaseEnabled(true);
         webSetting.setDomStorageEnabled(true);
         webSetting.setDisplayZoomControls(false);
         webSetting.setGeolocationEnabled(true);
         webSetting.setAppCacheMaxSize(Long.MAX_VALUE);
         webSetting.setPluginState(WebSettings.PluginState.ON_DEMAND);
-        // webSetting.setRenderPriority(WebSettings.RenderPriority.HIGH);
         webSetting.setCacheMode(WebSettings.LOAD_NO_CACHE);
-
-        webSetting.setUserAgentString(webSetting.getUserAgentString() + "liujunpeng");
-        // this.getSettingsExtension().setPageCacheCapacity(IX5WebSettings.DEFAULT_CACHE_CAPACITY);//extension
-        // settings 的设计
-
-        this.addJavascriptInterface(mWebViewJavaScriptFunction, "liujunpeng");
+        //设置ua
+        webSetting.setUserAgentString(webSetting.getUserAgentString() + "woniudanci");
     }
 
 
-    private class SelfWebViewClient extends com.tencent.smtt.sdk.WebViewClient {
+    private class SelfWebViewClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -184,66 +188,16 @@ public class X5WebView extends WebView {
                 isCleanHistory = false;
             }
         }
-    }
 
-    private WebViewJavaScriptFunction mWebViewJavaScriptFunction = new WebViewJavaScriptFunction() {
         @Override
-        public void onJsFunctionCalled(String tag) {
-
+        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setMessage("SSL认证失败，是否继续访问？")
+                    .setPositiveButton("确定", (dialog, which) -> handler.proceed())
+                    .setNegativeButton("取消", (dialog, which) -> handler.cancel())
+                    .create()
+                    .show();
         }
-
-        @JavascriptInterface
-        public String getNativeUserInfo() {//返回用户信息
-            return "";
-        }
-
-        @JavascriptInterface
-        public void closeNativeWebView() {//关闭浏览器
-            ThreadUtil.runOnUiThread(() -> {
-                if (null != mActivity && !mActivity.isFinishing()) {
-                    mActivity.finish();
-                }
-            });
-        }
-
-        @JavascriptInterface
-        public void setWebViewTitle(String title) {//修改标题
-            ThreadUtil.runOnUiThread(() -> {
-                if (null != mOnReceivedTitleListener) {
-                    mOnReceivedTitleListener.onReceivedTitle(title);
-                }
-            });
-        }
-
-        @JavascriptInterface
-        public void openNativeView(boolean isClose, String classPath) {
-            ThreadUtil.runOnUiThread(() -> {
-                if (null != mActivity) {
-                    try {
-                        Intent intent = new Intent();
-                        ComponentName com = new ComponentName(mContext.getPackageName(), classPath);
-                        intent.setComponent(com);
-                        mContext.startActivity(intent);
-                    } catch (Exception e) {
-                        ToastUtils.showToast("请升级至最新版本~");
-                        return;
-                    }
-
-                    if (isClose && !mActivity.isFinishing()) {
-                        mActivity.finish();
-                    }
-                }
-            });
-        }
-    };
-
-    private onReceivedTitleListener mOnReceivedTitleListener;
-
-    public interface onReceivedTitleListener {
-        void onReceivedTitle(String title);
     }
 
-    public void setOnReceivedTitleListener(onReceivedTitleListener onReceivedTitleListener) {
-        this.mOnReceivedTitleListener = onReceivedTitleListener;
-    }
 }
